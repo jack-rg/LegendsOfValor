@@ -1,28 +1,24 @@
 package Entities;
 
-import java.util.ArrayList;
 import java.util.Scanner;
 
+import Entities.Util.Player.LegendsPlayerHeroTeam;
 import Util.Player;
 import Util.Token;
 
 public class LegendsPlayer extends Player {
 	public static Scanner in = new Scanner(System.in);
-	public ArrayList<Hero> team;
+	private LegendsPlayerHeroTeam team;
 	private Token token;
 
 	public LegendsPlayer(int ID, String name, Token token) {
 		super(ID, name);
-		this.token = token;
-		team = new ArrayList<Hero>();
+		this.setToken(token);
+		team = new LegendsPlayerHeroTeam();
 	}
 
-	public void addToTeam(Hero hero) {
-		team.add(hero);
-	}
-
-	public ArrayList<Hero> getTeam() {
-		return team;
+	public void addHero(LegendsHero hero) {
+		this.team.addHero(hero);
 	}
 
 	public void printTeam() {
@@ -30,7 +26,7 @@ public class LegendsPlayer extends Player {
 		System.out.format("|        Your Team       |%n");
 		System.out.format("+------------------------+%n");
 		int i = 0;
-		for (Hero h : team) {
+		for (LegendsHero h : team) {
 			System.out.format("%3d: " + h + "%n", i);
 			i++;
 		}
@@ -41,9 +37,17 @@ public class LegendsPlayer extends Player {
 		System.out.format("|        Your Team       |%n");
 		System.out.format("+------------------------+%n");
 		int i = 0;
-		for (Hero h : team) {
+		for (LegendsHero h : team) {
 			System.out.format("%3d: " + h.getName() + "%n", i);
 			i++;
 		}
+	}
+
+	public Token getToken() {
+		return token;
+	}
+
+	public void setToken(Token token) {
+		this.token = token;
 	}
 }
