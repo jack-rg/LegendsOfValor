@@ -1,9 +1,9 @@
-/*=====================================================*/
-/* Project Title: Legends: Heroes and Monster          */
-/* Course Name: GRS CS611                              */
-/* Semester: Spring '21                                */
-/* Project Author: Victor Vicente                      */
-/*=====================================================*/
+/*======================================================================*/
+/* Project Title: Legends Of Valor                                      */
+/* Course Name: GRS CS611                                               */
+/* Semester: Spring '21                                                 */
+/* Project Author: Victor Vicente, Jack Giunta, Victoria-Rose Burke     */
+/*======================================================================*/
 
 package Util;
 
