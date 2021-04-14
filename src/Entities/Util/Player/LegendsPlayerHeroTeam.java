@@ -6,6 +6,7 @@ import java.util.Scanner;
 
 import Entities.LegendsHero;
 import Util.Random;
+import Util.Creation.EntityGenerator;
 
 public class LegendsPlayerHeroTeam implements Iterable<LegendsHero> {
 
@@ -36,17 +37,17 @@ public class LegendsPlayerHeroTeam implements Iterable<LegendsHero> {
 		LegendsHero hero;
 		for (int i = 0; i < amountOfHeroes; i++) {
 			if (createOwnHeroes) {
-				hero = HeroCreation.generateCustomHero();
+				hero = EntityGenerator.generateCustomHero();
 			} else {
 				System.out.println();
 				System.out.println("Creating a random hero pool to pick from! Expect some lag!");
-				ArrayList<LegendsHero> pickableHeroes = HeroCreation.generateHeroes(2);
+				ArrayList<LegendsHero> pickableHeroes = EntityGenerator.generateHeroes(2);
 				hero = pickableHeroes.get(Random.randomInt(0, pickableHeroes.size() - 1));
 
 				System.out.println();
 				System.out.println("Picked hero: " + hero);
 				System.out.println("Hero Class: " + hero.getEntityClass());
-				System.out.println("Hero Stats: \n" + hero.getHeroRelatedStats());
+				System.out.println("Hero Stats: \n" + hero.getEntityStats());
 			}
 			this.addHero(hero);
 		}

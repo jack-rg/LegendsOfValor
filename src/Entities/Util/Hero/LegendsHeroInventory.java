@@ -23,7 +23,7 @@ public class LegendsHeroInventory {
 
 		this.knownSpells = new ArrayList<LegendsSpell>();
 
-		this.balance = 0;
+		this.balance = 100;
 
 		this.items = new ArrayList<LegendsItem>();
 	}

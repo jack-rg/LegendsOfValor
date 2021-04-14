@@ -11,8 +11,7 @@ public class LegendsWeapon extends LegendsItem {
 	private int currentDurability;
 	private int maxDurability;
 
-	public LegendsWeapon(int ID, String name, int cost, int minLevel, int damage, boolean dualHanded,
-			int currentDurability, int maxDurability) {
+	public LegendsWeapon(int ID, String name, int cost, int minLevel, int damage, boolean dualHanded, int maxDurability) {
 		super(ID, name, cost, minLevel);
 		this.setDamage(damage);
 		this.setDualHanded(dualHanded);

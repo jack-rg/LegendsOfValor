@@ -8,9 +8,13 @@ import Util.State;
 import java.io.*;
 
 public class LegendsOfValor extends Game {
+	public static int ENTITY_IDS;
+	public static int ITEM_IDS;
+	
 	public LegendsMap map;
 	public LegendsPlayer player;
 	private static Scanner in = new Scanner(System.in); // player input scanner
+
 	public EventHandler eventHandler;
 
 	public LegendsMap getMap() {

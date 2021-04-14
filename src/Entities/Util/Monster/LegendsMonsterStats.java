@@ -5,9 +5,9 @@ import Entities.Util.LegendsEntityStats;
 public class LegendsMonsterStats extends LegendsEntityStats {
 	private int defense;
 	private int strength;
-	private int dodge;
+	private double dodge;
 
-	public LegendsMonsterStats(int exp, int level, int maxHP, int defense, int strength, int dodge) {
+	public LegendsMonsterStats(int exp, int level, int maxHP, int defense, int strength, double dodge) {
 		super(exp, level, maxHP);
 		this.defense = defense;
 		this.strength = strength;
@@ -22,7 +22,7 @@ public class LegendsMonsterStats extends LegendsEntityStats {
 		return strength;
 	}
 
-	public int getDodge() {
+	public double getDodge() {
 		return dodge;
 	}
 

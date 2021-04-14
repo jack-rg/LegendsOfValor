@@ -1,6 +1,6 @@
 package Items;
 
-public abstract class LegendsItem {
+public class LegendsItem {
 	private String name;
 	private int ID;
 
