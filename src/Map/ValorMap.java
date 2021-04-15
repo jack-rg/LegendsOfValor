@@ -1,5 +1,6 @@
 package Map;
 
+import Util.Map;
 import Util.Token;
 
 public class ValorMap extends Map{
