@@ -1,3 +1,9 @@
+package Map.Track_Types;
+
+import Map.Place_Types.Place;
+import Util.Token;
+import Map.Place_Types.Nature;
+
 //A path track filled with inaccessible areas
 public class Boundary extends Track{
     private Place[] places;
@@ -8,7 +14,7 @@ public class Boundary extends Track{
     super(boundID);
     places = new Place[length];
     for(int i = 0; i < places.length; i++){
-     places[i] = new Nature(i, 0, new Token("XXX"), Location.NATURE);
+     places[i] = new Nature(i, 0, new Token("XXX"));
     }
     currPlace = places[0];
   }

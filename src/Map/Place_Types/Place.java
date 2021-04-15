@@ -1,21 +1,25 @@
+package Map.Place_Types;
+
+import Game.LegendsOfValor;
+import Map.Cell;
+import Map.Location;
+import Util.Token;
+
 //Specifies the components of a location in an RPG
-public abstract class Place extends Cell{
+public abstract class Place extends Cell {
   public boolean accessiblity;
-  public Location locationType;
   
-  public Place(int row, int col, boolean accessiblity, Location locationType, Token design){
+  public Place(int row, int col, boolean accessiblity, Token design){
     super(row, col, design);
     this.accessiblity = accessiblity;
-    this.locationType = locationType;
   }
   
   public Place(int row, int col, boolean accessiblity, Location locationType, Token design, Token activeDesign){
     super(row, col, design, activeDesign);
     this.accessiblity = accessiblity;
-    this.locationType = locationType;
   }
   
-  public abstract void activatePlace(RPG game);
+  public abstract void activatePlace(LegendsOfValor game);
   
   
   public boolean isAccessible(){
@@ -25,12 +29,5 @@ public abstract class Place extends Cell{
   public void setAccessibility(boolean accessiblity){
     this.accessiblity = accessiblity; 
   }
-  
-  public Location getLocation(){
-    return locationType; 
-  }
-  
-  
-  
   
 }

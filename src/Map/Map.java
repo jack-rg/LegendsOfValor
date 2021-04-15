@@ -1,6 +1,9 @@
+import Util.Player;
+import Util.Token;
+
 public class Map{
   public Track[] map;
-  public Place currCell;
+  public Player currCell;
   public Track currTrack;
   public int numTracks;
   public Token teamToken;

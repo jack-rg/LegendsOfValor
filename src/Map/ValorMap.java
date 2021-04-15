@@ -1,3 +1,7 @@
+package Map;
+
+import Util.Token;
+
 public class ValorMap extends Map{
   public int mapDimen;
   public int numTracks;

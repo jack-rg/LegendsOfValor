@@ -1,3 +1,13 @@
+package Map.Track_Types;
+
+import Map.Place_Types.Place;
+import Map.Place_Types.Plains_Types.Bush;
+import Map.Place_Types.Plains_Types.Cave;
+import Map.Place_Types.Plains_Types.Koulou;
+import Map.Place_Types.Plains_Types.Plains;
+import Map.Place_Types.Nexus;
+import Util.Token;
+
 //Class that holds a two-column track of places, starting and ending with a row of Nexuses. Monster Nexus spawn first on top of the column.
 public class Lane extends Track{
   private Place[][] places;
@@ -36,16 +46,16 @@ public class Lane extends Track{
   public Place generateLocation(int r, int c){
     double rng = Math.random() * 10;
     if(rng > 6){
-      return new Plains(r,c, new Token("==="), Location.PLAINS);
+      return new Plains(r,c, new Token("==="));
     }
     else if( rng > 4){
-      return new Bush(r,c, new Token("***"), Location.BUSH);
+      return new Bush(r,c, new Token("***"));
     }
     else if( rng > 2){
-      return new Koulou(r,c,  new Token("KKK"), Location.KOULOU);
+      return new Koulou(r,c,  new Token("KKK"));
     }
     else{
-      return new Cave(r,c,  new Token("CCC"), Location.CAVE); 
+      return new Cave(r,c,  new Token("CCC")); 
     }
   }
   

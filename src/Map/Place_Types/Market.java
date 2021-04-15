@@ -1,64 +1,30 @@
+package Map.Place_Types;
+
 import java.io.File;
 import java.util.*;
 
+import Entities.LegendsHero;
+import Entities.Util.Hero.LegendsHeroInventory;
+import Game.LegendsOfValor;
+import Items.LegendsArmour;
+import Items.LegendsItem;
+import Items.LegendsPotion;
+import Items.LegendsSpell;
+import Items.LegendsWeapon;
+import Map.Location;
+import Util.Token;
+
 public class Market extends Place {
-  public Inventory inventory;
+  public ArrayList<LegendsItem> inventory;
 
-  public Market(int row, int col, Token marketToken, Location location) {
-    super(row, col, true, location, marketToken);
-    inventory = new Inventory();
-    loadItems(3);
+  public Market(int row, int col, Token marketToken) {
+    super(row, col, true, marketToken);
+    inventory = new ArrayList<LegendsItem>();
+    // TODO 
+    // Generate Random Items
   }
-
-  public void loadItems(int numRequestedItems) {
-
-    String[] params = new String[0];
-    for (int i = 0; i < numRequestedItems; i++) {
-      
-      params = initItems(new File("Additionals/Weaponry.txt"));
-      inventory.addWeapon(new Weapon(params));
-
-      params = initItems(new File("Additionals/Armory.txt"));
-      inventory.addArmor(new Armor(params));
-
-      params = initItems(new File("Additionals/Spells.txt"));
-      inventory.addSpell(new Spell(params));
-
-      params = initItems(new File("Additionals/Potions.txt"));
-      inventory.addPotion(new Potion(params));
-
-    }
-  }
-
-  public String[] initItems(File file) {
-    try {
-      List<String> lines = readLines(file);
-      lines.remove(0); // remove header
-      Random random = new Random();
-      String[] parameters = lines.get(random.nextInt(lines.size())).split("\\s+");
-      return parameters;
-    } catch (Exception e) {
-      System.out.println(e);
-      return null;
-    }
-  }
-
-  public ArrayList<String> readLines(File file) {
-    try {
-      ArrayList<String> l = new ArrayList<String>();
-      Scanner input = new Scanner(file);
-      while (input.hasNextLine()) {
-        l.add(input.nextLine());
-      }
-      input.close();
-      return l;
-    } catch (Exception e) {
-      System.out.println("File not found");
-      return null;
-    }
-  }
-
-  public void activatePlace(RPG game) {
+  
+  public void activatePlace(LegendsOfValor game) {
     game.getMap().updateBoard(this.getRowID(), this.getColID());
     System.out.println("Your party stumbles past the town market!");
     System.out.println("Would you like to enter? [Y/N]");
@@ -204,7 +170,7 @@ public class Market extends Place {
 
   }
 
-  public void attemptPurchasePotion(Hero activeHero) {
+  public void attemptPurchasePotion(LegendsHero activeHero) {
     while (true) {
       System.out.println("What would you like to purchase? Input the corresponding int, or input -1 to go back.");
       inventory.printPotions();
@@ -213,11 +179,11 @@ public class Market extends Place {
         if (input == -1) {
           break;
         } else {
-          Potion selection = inventory.getPotions().get(input);
+          LegendsPotion selection = inventory.getPotions().get(input);
           System.out.println("You chose " + selection.getName());
           if (selection.getPrice() <= activeHero.getMoney()) {
             if (selection.getMinLevel() <= activeHero.getLevel()) {
-              Potion item = inventory.getPotions().remove(input);
+              LegendsPotion item = inventory.getPotions().remove(input);
               activeHero.accessInventory().addPotion(item);
               activeHero.updateMoney(-1 * selection.getPrice());
               System.out.println("Thank you for your purchase!");
@@ -236,7 +202,7 @@ public class Market extends Place {
 
   }
 
-  public void attemptPurchaseSpell(Hero activeHero) {
+  public void attemptPurchaseSpell(LegendsHero activeHero) {
     while (true) {
       System.out.println("What would you like to purchase? Input the corresponding int, or input -1 to go back.");
       inventory.printSpells();
@@ -245,11 +211,11 @@ public class Market extends Place {
         if (input == -1) {
           break;
         } else {
-          Spell selection = inventory.getSpells().get(input);
+          LegendsSpell selection = inventory.getSpells().get(input);
           System.out.println("You chose " + selection.getName());
           if (selection.getPrice() <= activeHero.getMoney()) {
             if (selection.getMinLevel() <= activeHero.getLevel()) {
-              Spell item = inventory.getSpells().remove(input);
+              LegendsSpell item = inventory.getSpells().remove(input);
               activeHero.accessInventory().addSpell(item);
               activeHero.updateMoney(-1 * selection.getPrice());
               System.out.println("Thank you for your purchase!");
@@ -267,7 +233,7 @@ public class Market extends Place {
     }
   }
 
-  public ItemType chooseCategory(Inventory activeInventory) {
+  public ItemType chooseCategory(LegendsHeroInventory activeInventory) {
     System.out.println("What would you like to look at?");
     while (true) {
       System.out.println("1. Weapons   2. Armor   3. Potions   4. Spells   0. Back");
@@ -295,11 +261,11 @@ public class Market extends Place {
 
   }
 
-  public void sellSequence(RPG game) {
+  public void sellSequence(LegendsOfValor game) {
 
     System.out.println("Ooo, whatcha got?!?!");
     while (true) {
-      Hero activeHero = game.player.chooseHero();
+    	LegendsHero activeHero = game.player.chooseHero();
       if (activeHero == null) {
         break;
       }
@@ -329,7 +295,7 @@ public class Market extends Place {
 
   }
 
-  public void attemptSellWeapon(Hero activeHero) {
+  public void attemptSellWeapon(LegendsHero activeHero) {
     while (true) {
       System.out.println("What would you like to part with? Input the corresponding int, or input -1 to go back.");
       activeHero.accessInventory().printWeapons();
@@ -338,7 +304,7 @@ public class Market extends Place {
         if (input == -1) {
           break;
         } else {
-          Weapon selection = activeHero.accessInventory().getWeapons().get(input);
+          LegendsWeapon selection = activeHero.accessInventory().getWeapons().get(input);
           System.out.println("You chose " + selection.getName() + ". Press Y to complete to transaction, or press anything else to go back.");
           in.nextLine();
           String confirm = in.nextLine();
@@ -357,7 +323,7 @@ public class Market extends Place {
     }
   }
 
-  public void attemptSellArmor(Hero activeHero) {
+  public void attemptSellArmor(LegendsHero activeHero) {
     while (true) {
       System.out.println("What would you like to part with? Input the corresponding int, or input -1 to go back.");
       activeHero.accessInventory().printArmors();
@@ -366,7 +332,7 @@ public class Market extends Place {
         if (input == -1) {
           break;
         } else {
-          Armor selection = activeHero.accessInventory().getArmors().get(input);
+          LegendsArmour selection = activeHero.accessInventory().getArmors().get(input);
           System.out.println("You chose " + selection.getName() + ". Press Y to complete to transaction, or press anything else to go back.");
           in.nextLine();
           String confirm = in.nextLine();
@@ -385,7 +351,7 @@ public class Market extends Place {
     }
   }
 
-  public void attemptSellPotion(Hero activeHero) {
+  public void attemptSellPotion(LegendsHero activeHero) {
     while (true) {
       System.out.println("What would you like to part with? Input the corresponding int, or input -1 to go back.");
       activeHero.accessInventory().printPotions();
@@ -394,7 +360,7 @@ public class Market extends Place {
         if (input == -1) {
           break;
         } else {
-          Potion selection = activeHero.accessInventory().getPotions().get(input);
+          LegendsPotion selection = activeHero.accessInventory().getPotions().get(input);
           System.out.println("You chose " + selection.getName() + ". Press Y to complete to transaction, or press anything else to go back.");
           in.nextLine();
           String confirm = in.nextLine();
@@ -414,7 +380,7 @@ public class Market extends Place {
   }
 
   
-  public void attemptSellSpell(Hero activeHero) {
+  public void attemptSellSpell(LegendsHero activeHero) {
     while (true) {
       System.out.println("What would you like to part with? Input the corresponding int, or input -1 to go back.");
       activeHero.accessInventory().printSpells();
@@ -423,7 +389,7 @@ public class Market extends Place {
         if (input == -1) {
           break;
         } else {
-          Spell selection = activeHero.accessInventory().getSpells().get(input);
+          LegendsSpell selection = activeHero.accessInventory().getSpells().get(input);
           System.out.println("You chose " + selection.getName()
               + ". Press Y to complete to transaction, or press anything else to go back.");
               in.nextLine();

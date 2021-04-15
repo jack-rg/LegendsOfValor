@@ -1,4 +1,8 @@
+package Map;
+
 import java.util.*;
+
+import Util.Token;
 public class Cell { 
   private Token token;  
   private Token activeDesign;
