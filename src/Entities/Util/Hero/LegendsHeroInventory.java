@@ -30,6 +30,14 @@ public class LegendsHeroInventory {
 		this.items = new ArrayList<LegendsItem>();
 	}
 
+	public void addItem(LegendsItem item) {
+		this.items.add(item);
+	}
+	
+	public void learnSpell(LegendsSpell spell) {
+		this.knownSpells.add(spell);
+	}
+	
 	public void spendMoney(int toSpend) {
 		this.balance -= toSpend;
 	}
