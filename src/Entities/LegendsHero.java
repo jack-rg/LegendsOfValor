@@ -18,7 +18,15 @@ public class LegendsHero extends LegendsEntity {
 		this.stats = stats;
 		this.heroClass = heroClass;
 	}
-
+	
+	public void levelUp() {
+		this.stats.levelUp(this.heroClass);
+		
+		this.inventory.gainMoney(100);
+		
+		System.out.println(this.getName() + " has leveled up to level " + this.stats.getLevel() + "!");
+	}
+	
 	@Override
 	public LegendsEntityClass getEntityClass() {
 		return this.heroClass;

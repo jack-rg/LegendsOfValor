@@ -16,6 +16,12 @@ public class LegendsMonster extends LegendsEntity {
 		this.monsterClass = monsterClass;
 	}
 
+	public void levelUp() {
+		this.stats.levelUp(this.monsterClass);
+		
+		System.out.println(this.getName() + " has leveled up to level " + this.stats.getLevel() + "!");
+	}
+	
 	@Override
 	public LegendsEntityClass getEntityClass() {
 		return monsterClass;

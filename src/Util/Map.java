@@ -1,8 +1,8 @@
 package Util;
 
-import Map.Place_Types.Place;
-import Map.Track_Types.Path;
-import Map.Track_Types.Track;
+import Map.Places.Place;
+import Map.Tracks.Path;
+import Map.Tracks.Track;
 
 public class Map{
   public Track[] map;

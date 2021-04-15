@@ -24,6 +24,26 @@ public class LegendsHeroArmour {
 	/* Game Methods */
 	/* ============ */
 
+	public double getMultiplier() {
+		double headMultiplier = 0.0;
+		if (this.getHeadPiece() != null)
+			headMultiplier = this.getHeadPiece().getDefenseMultiplier();
+
+		double chestMultiplier = 0.0;
+		if (this.getChestPiece() != null)
+			chestMultiplier = this.getChestPiece() .getDefenseMultiplier();
+
+		double legMultiplier = 0.0;
+		if (this.getLegPiece() != null)
+			legMultiplier = this.getLegPiece().getDefenseMultiplier();
+
+		double feetMultiplier = 0.0;
+		if (this.getFeetPiece() != null)
+			feetMultiplier = this.getFeetPiece().getDefenseMultiplier();
+
+		return (headMultiplier + chestMultiplier + legMultiplier + feetMultiplier) / 4.0;
+	}
+	
 	/*
 	 * This take damage method is special, since the equipped armour takes damage as
 	 * a while, but the damage is split between each in regards to a specific

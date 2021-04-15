@@ -1,5 +1,7 @@
 package Entities.Util.Hero;
 
+import Entities.Classes.LegendsEntityClass;
+import Entities.Classes.LegendsHeroClass;
 import Entities.Util.LegendsEntityStats;
 
 public class LegendsHeroStats extends LegendsEntityStats {
@@ -18,6 +20,19 @@ public class LegendsHeroStats extends LegendsEntityStats {
 		this.dexterity = dexterity;
 		this.strength = strength;
 		this.agility = agility;
+	}
+	
+	public void levelUp(LegendsEntityClass eClass) {
+		LegendsHeroClass classType = (LegendsHeroClass) eClass;
+		
+		this.increaseLevel();
+		int level = this.getLevel();
+		
+		this.increaseMaxHP(100 * level - this.getMaxHP());
+		this.maxMana = (int) Math.round(this.maxMana * 1.1);
+		this.strength = (int) Math.round(this.strength * classType.getStrengthBoost() + 1.05);
+		this.dexterity = (int) Math.round(this.dexterity * classType.getDexterityBoost() + 1.05);
+		this.agility = (int) Math.round(this.agility * classType.getAgilityBoost() + 1.05);
 	}
 	
 	public void increaseMaxMana(int toIncrease) {
@@ -63,6 +78,22 @@ public class LegendsHeroStats extends LegendsEntityStats {
 		this.dexterity = 0;
 		this.agility = 0;
 		this.strength = 0;
+	}
+
+	public void applyBuff(String targetAbility, double multiplier) {
+		switch (targetAbility) {
+		case "Strength":
+			this.strength = (int) Math.round(this.strength * (1 + multiplier));
+			break;
+		case "Dexterity":
+			this.dexterity = (int) Math.round(this.dexterity * (1 + multiplier));
+			break;
+		case "Agility":
+			this.agility = (int) Math.round(this.agility * (1 + multiplier));
+			break;
+		default:
+			System.out.println("ERROR!!");
+		}
 	}
 
 }

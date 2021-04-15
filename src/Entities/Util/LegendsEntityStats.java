@@ -1,5 +1,7 @@
 package Entities.Util;
 
+import Entities.Classes.LegendsEntityClass;
+
 public abstract class LegendsEntityStats {
 
 	private int exp;
@@ -15,6 +17,9 @@ public abstract class LegendsEntityStats {
 		this.hp = maxHP;
 		this.alive = true;
 	}
+	
+	
+	public abstract void levelUp(LegendsEntityClass eClass);
 
 	public void resetStats() {
 		this.exp = 0;
