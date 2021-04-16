@@ -70,6 +70,18 @@ public class Path extends Track {
 		isActive = activity;
 	}
 
+	public int getCurrRowID() { return currRowID;}
+
+	public void setCurrRowID(int i) {currColID= i;}
+
+	public int getCurrColID() { return currColID;}
+
+	public void setCurrColID(int i) {currColID=i;}
+
+	public int getLength() {return length;}
+
+	public void setLength(int i) {length=i;}
+
 	public void printTrack() {
 		System.out.println("insert print pls");
 	}

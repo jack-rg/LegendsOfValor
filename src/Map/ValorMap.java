@@ -40,4 +40,36 @@ public class ValorMap extends Map {
 		currRow = currCell.getRowID();
 	}
 
+	public int getmapDimen() { return mapDimen;}
+
+	public void setmapDimen(int i) { mapDimen=i;}
+
+	public int getnumTracks() {return numTracks;}
+
+	public void setNumTracks(int i) { numTracks=i;}
+
+	public int getTotalCells() {return totalCells;}
+
+	public void setTotalCells(int i) {totalCells=i;}
+
+	public Token getTeamToken() {return teamToken;}
+
+	public void setTeamToken(Token i) {teamToken=i;}
+
+	public Place getcurrCell() { return currCell;}
+
+	public void setCurrCell(Place i) { currCell=i; }
+
+	public Track getCurrTrack() {return currTrack;}
+
+	public void setCurrTrack(Track i) {currTrack=i;}
+
+	public int getCurrRow() {return currRow;}
+
+	public void setCurrRow(int i) {currRow=i;}
+
+	public int getCurrCol() {return currCol;}
+
+	public void setCurrCol(int i) {currCol=i;}
+
 }

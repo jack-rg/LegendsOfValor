@@ -78,6 +78,18 @@ public class Lane extends Track {
 		isActive = activity;
 	}
 
+	public int getCurrPlaceRowID() { return currPlaceRowID;}
+
+	public void setCurrPlaceRowID(int i) {currPlaceColID= i;}
+
+	public int getCurrPlaceColID() { return currPlaceColID;}
+
+	public void setCurrPlaceColID(int i) {currPlaceColID=i;}
+
+	public int getLength() {return length;}
+
+	public void setLength(int i) {length=i;}
+
 	public void printTrack() {
 		System.out.println("insert print pls");
 	}
