@@ -1,5 +1,6 @@
 package Map.Places;
 
+import Entities.LegendsHero;
 import Game.LegendsOfValor;
 import Util.Token;
 
@@ -10,9 +11,9 @@ public class Nexus extends Market{
     super(row, col, nexusType);
   }
   
-  public void activatePlace(LegendsOfValor game){
+  public void activatePlace(LegendsHero h, LegendsOfValor game){
     System.out.println("This area is a Nexus"); 
-    super.activatePlace(game);
+    super.activatePlace(h, game);
   }
   
   
