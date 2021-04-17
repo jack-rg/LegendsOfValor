@@ -16,31 +16,10 @@ public class LegendsOfValor extends Game {
   private static Scanner in = new Scanner(System.in); // player input scanner
   
   
-  public void playGame() {
-    processUserInput();
-    updateStatus();
-  }
-  
   public void initObjects(){
     map = new LegendsMap(8, player.getToken());
   }
-  
-  
-  
-  public void chooseCharacters() {
-    int numHeros = 3;
-    ArrayList<Hero> heroSelection = new ArrayList<Hero>();
-    loadCharacters(heroSelection);
-    System.out.println(
-                       "In this game you are given "+numHeros+" random  heroes to adventure with. Warriors are renowned for their strength and speed; paladins, for their speed and power; sorcerers, for their power and strength. May the odds be in your favor... ");
-    for(int i = 0; i<numHeros; i++){
-      int nextSelection = Math.random(heroSelection.size());
-      player.addToTeam(heroSelection.remove(nextSelection)); 
-    }
-    
-    player.printTeamNames();
-    in.nextLine();
-  }
+ 
   
   public void printActions() {
     String leftAlignFormat = "| %-15s | %-4s |%n";
@@ -133,38 +112,7 @@ public class LegendsOfValor extends Game {
       }
     }
   }
-  
-  public void showInfo() {
-    System.out.println("INFO");
-  }
-  
-  public void quit() {
-    System.out
-      .println("Are you sure you want to quit? Press Q to confirm, press any other key to continue playing.");
-    String quitting = in.nextLine();
-    if (quitting.equalsIgnoreCase("Q")) {
-      System.out.println("Thanks for playing! Goodbye :)");
-      setStatus(State.QUIT);
-    }
-  }
-  
-  public void checkInventory() {
-    player.printInventory();
-  }
-  
-  private void readLines(String fileName) {
-    File file = new File(fileName);
-    try {
-      Scanner fileReader = new Scanner(file);
-      while (fileReader.hasNext()) {
-        System.out.println(fileReader.nextLine());
-      }
-      fileReader.close();
-    } catch (Exception e) {
-      System.out.println("Error: issue reading from file");
-    }
-    
-  }
+
   
   public void updateStatus() {
     
