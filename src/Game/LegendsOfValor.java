@@ -38,16 +38,6 @@ public class LegendsOfValor extends Game {
 		processUserInput();
 	}
 
-	public void printCharacters(ArrayList<LegendsHero> heroSelection) {
-		System.out.format(
-				"  |      HERO NAME      | LEVEL |  HP  |  MANA  | MONEY | EXP | DEXTERITY  |  AGILITY  |  STRENGTH  |%n");
-		int i = 0;
-		for (LegendsHero h : heroSelection) {
-			System.out.println(i + ": " + h);
-			i++;
-		}
-	}
-
 	public ArrayList<String> readLines(File file) {
 		try {
 			ArrayList<String> l = new ArrayList<String>();
