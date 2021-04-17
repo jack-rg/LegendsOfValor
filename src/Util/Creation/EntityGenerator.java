@@ -125,7 +125,8 @@ public class EntityGenerator {
 	 * in regards to level.
 	 */
 	private static LegendsHeroStats getHeroStats(LegendsHeroClass classType) {
-		int level = Random.randomInt(1, 20);
+		int level = 100;
+				//Random.randomInt(1, 20);
 
 		int maxHP = 100 * level;
 		int maxMana = (int) Math.round(100 * (Math.pow(1.1, level)));

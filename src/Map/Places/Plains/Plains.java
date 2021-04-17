@@ -15,9 +15,9 @@ import Items.LegendsPotion;
 import Items.LegendsSpell;
 import Items.LegendsWeapon;
 import Map.Places.Place;
+import Map.Tracks.Track;
 import Util.Token;
 import Util.Creation.ItemGenerator;
-import Util.Random;
 import Util.State;
 
 public class Plains extends Place {
@@ -25,9 +25,6 @@ public class Plains extends Place {
 			Arrays.asList(new String[] { "Dexterity", "Strength", "Agility", "None" }));
 
 	private String statToBoost;
-
-	private ArrayList<LegendsHero> heroesOnCell;
-	private ArrayList<LegendsMonster> monstersOnCell;
 
 	private ArrayList<LegendsHero> leftOverHeroes;
 	private ArrayList<LegendsMonster> leftOverMonsters;
@@ -37,12 +34,9 @@ public class Plains extends Place {
 
 	HashMap<LegendsEntity, HashMap<String, Integer>> effectCounters;
 
-	public Plains(int row, int col, Token plainToken, String statToBoost) {
-		super(row, col, true, plainToken);
+	public Plains(Track track, int row, int col, Token plainToken, String statToBoost) {
+		super(track, row, col, true, plainToken);
 		this.setStatToBoost(statToBoost);
-
-		heroesOnCell = new ArrayList<LegendsHero>();
-		monstersOnCell = new ArrayList<LegendsMonster>();
 
 		leftOverHeroes = new ArrayList<LegendsHero>();
 		leftOverMonsters = new ArrayList<LegendsMonster>();
@@ -54,16 +48,14 @@ public class Plains extends Place {
 	}
 
 	public void activatePlace(LegendsEntity e, LegendsOfValor game) {
-		game.getMap().updateBoard(this.getRowID(), this.getColID());
-
 		if (e instanceof LegendsHero)
-			heroesOnCell.add((LegendsHero) e);
+			this.getHeroesOnCell().add((LegendsHero) e);
 		else if (e instanceof LegendsMonster)
-			monstersOnCell.add((LegendsMonster) e);
+			this.getMonstersOnCell().add((LegendsMonster) e);
 
 		System.out.println("Your party sets out along the road!");
 
-		if (heroesOnCell.size() >= 1 && monstersOnCell.size() >= 1) {
+		if (this.getHeroesOnCell().size() >= 1 && this.getMonstersOnCell().size() >= 1) {
 			fightSequence(game);
 		}
 	}
@@ -73,7 +65,7 @@ public class Plains extends Place {
 
 		makeMatchings();
 
-		while (!matchings.isEmpty() && (!leftOverHeroes.isEmpty() || !leftOverMonsters.isEmpty())
+		while (!matchings.isEmpty()
 				&& game.getStatus().equals(State.PLAYING)) {
 			if (!leftOverHeroes.isEmpty() && !leftOverMonsters.isEmpty())
 				reMatch();
@@ -81,6 +73,11 @@ public class Plains extends Place {
 			for (LegendsHero h : matchings.keySet())
 				heroFight(h, matchings.get(h), game);
 		}
+		
+		if (leftOverHeroes.size() > 0)
+			System.out.println("Heroes won!");
+		else if (leftOverMonsters.size() > 0)
+			System.out.println("Monsters won!");
 	}
 
 	private void heroFight(LegendsHero h, LegendsMonster m, LegendsOfValor game) {
@@ -430,7 +427,7 @@ public class Plains extends Place {
 	private void attackMonster(LegendsHero h, LegendsMonster m) {
 		double dodgeChance = ((LegendsMonsterStats) m.getEntityStats()).getDodge() * 0.1;
 		if (Math.random() > dodgeChance) {
-			int weaponDamage = 100;
+			int weaponDamage = 200;
 			if (h.getInventory().getEquippedWeapon() != null)
 				weaponDamage = h.getInventory().getEquippedWeapon().getDamage();
 
@@ -503,7 +500,7 @@ public class Plains extends Place {
 		System.out.format(leftAlignFormat, "check inventory", "c");
 		System.out.format(leftAlignFormat, "attack monster", "a");
 		System.out.format(leftAlignFormat, "cast spell", "s");
-		System.out.format(leftAlignFormat, "cast spell", "r");
+		System.out.format(leftAlignFormat, "revive teammate", "r");
 		System.out.format(leftAlignFormat, "quit", "q");
 		System.out.format("+-----------------+------+%n");
 
@@ -512,12 +509,12 @@ public class Plains extends Place {
 	public boolean isFighting() {
 		boolean flagMonster = false;
 		boolean flagHero = false;
-		for (LegendsMonster m : monstersOnCell) {
+		for (LegendsMonster m : this.getMonstersOnCell()) {
 			if (m.getEntityStats().getCurrHP() > 0) {
 				flagMonster = true;
 			}
 		}
-		for (LegendsHero h : heroesOnCell) {
+		for (LegendsHero h : this.getHeroesOnCell()) {
 			if (h.getEntityStats().getCurrHP() > 0) {
 				flagHero = true;
 			}
@@ -525,17 +522,16 @@ public class Plains extends Place {
 		return flagHero && flagMonster;
 	}
 
-	@SuppressWarnings("unchecked")
 	private void reMatch() {
 		while ((!leftOverHeroes.isEmpty()) && (!leftOverMonsters.isEmpty()))
 			this.matchings.put(leftOverHeroes.remove(0), leftOverMonsters.remove(0));
 	}
 
-	@SuppressWarnings("unchecked")
 	private void makeMatchings() {
-		ArrayList<LegendsMonster> copyMonsters = (ArrayList<LegendsMonster>) monstersOnCell.clone();
-		ArrayList<LegendsHero> copyHeroes = (ArrayList<LegendsHero>) heroesOnCell.clone();
-
+		@SuppressWarnings("unchecked")
+		ArrayList<LegendsMonster> copyMonsters = (ArrayList<LegendsMonster>) this.getMonstersOnCell().clone();
+		@SuppressWarnings("unchecked")
+		ArrayList<LegendsHero> copyHeroes = (ArrayList<LegendsHero>) this.getHeroesOnCell().clone();
 		while ((!copyHeroes.isEmpty()) && (!copyMonsters.isEmpty())) {
 			this.matchings.put(copyHeroes.remove(0), copyMonsters.remove(0));
 		}

@@ -20,10 +20,6 @@ public abstract class Track {
 
 	public abstract Place getPlace(int row, int col);
 
-	public abstract Place getCurrPlace();
-
-	public abstract void setCurrPlace(int row, int col);
-
 	public abstract void printTrack();
 
 }

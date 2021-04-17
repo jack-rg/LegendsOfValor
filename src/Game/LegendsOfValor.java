@@ -4,27 +4,22 @@ import java.util.*;
 
 import Entities.LegendsHero;
 import Entities.LegendsMonster;
-import Entities.LegendsPlayer;
 import Map.LegendsMap;
 import Map.Places.MonsterNexus;
 import Map.Places.Nexus;
+import Map.Places.Place;
 import Map.Places.PlayerNexus;
-import Map.Places.Plains.Plains;
-import Util.Game;
 import Util.Random;
 import Util.State;
 import Util.Creation.EntityGenerator;
-
-import java.io.*;
 
 public class LegendsOfValor extends RPG {
 	public static int ENTITY_IDS;
 	public static int ITEM_IDS;
 
-	public LegendsMap map;
-	public LegendsPlayer player;
 	public ArrayList<LegendsMonster> monsters;
-	private int monsterIndex;
+	
+	private int roundCounter;
 
 	public Iterator<LegendsHero> itr;
 	private static Scanner in = new Scanner(System.in); // player input scanner
@@ -34,7 +29,26 @@ public class LegendsOfValor extends RPG {
 		itr = player.getTeam().iterator();
 		monsters = new ArrayList<LegendsMonster>();
 		generateMonsters(3);
-		monsterIndex = 0;
+		for(LegendsMonster m: monsters){
+		System.out.println(m.getName());
+		}
+		spawnEntities();
+	}
+
+	private void spawnEntities() {
+		int trackCounter = 0;
+		for (int i = 0; i < 3; i++) {
+			Place heroSpawnPlace = map.getPlace(trackCounter, map.getMapDimen() - 1, 0);
+			Place monsterSpawnPlace = map.getPlace(trackCounter, 0, 0);
+			player.getTeam().getHeroes().get(i).setCurrPlace(heroSpawnPlace);
+			heroSpawnPlace.addHeroOnCell(player.getTeam().getHeroes().get(i));
+			player.getTeam().getHeroes().get(i).setSpawnPlace(heroSpawnPlace);
+			monsters.get(i).setCurrPlace(monsterSpawnPlace);
+			monsterSpawnPlace.addMonsterOnCell(monsters.get(i));
+			monsters.get(i).setSpawnPlace(monsterSpawnPlace);
+			
+			trackCounter += 2;
+		}
 	}
 
 	public void generateMonsters(int toGenerate) {
@@ -44,7 +58,7 @@ public class LegendsOfValor extends RPG {
 			monsters.add(allMonsters.remove(Random.randomInt(0, allMonsters.size() - 1)));
 	}
 
-	public void printActions() {
+	public void printActions(LegendsHero currHero) {
 		String leftAlignFormat = "| %-15s | %-4s |%n";
 
 		System.out.format("+------------------------+%n");
@@ -60,10 +74,7 @@ public class LegendsOfValor extends RPG {
 		System.out.format(leftAlignFormat, "teleport", "t");
 		System.out.format(leftAlignFormat, "back", "b");
 
-		if (map.getCurrCell() instanceof Plains)
-			System.out.format(leftAlignFormat, "fight monster", "f");
-
-		if (map.getCurrCell() instanceof Nexus)
+		if (currHero.getCurrPlace() instanceof Nexus)
 			System.out.format(leftAlignFormat, "enter market", "e");
 
 		System.out.format(leftAlignFormat, "quit", "q");
@@ -72,81 +83,141 @@ public class LegendsOfValor extends RPG {
 	}
 
 	public void processUserInput() {
+		for(LegendsMonster m: monsters){
+		System.out.println(m.getName());
+		}
+
+		this.roundCounter++;
+		
+		if (roundCounter % (3*10) == 0)
+			spawnNewMonsters();
+		if (roundCounter % (3*15) == 0)
+			respawnHeroes();
+		
+
+		
 		LegendsHero currHero = itr.next();
-		while (true) {
+		int currRowID = currHero.getCurrPlace().getRowID();
+		int currColID = currHero.getCurrPlace().getColID();
+
+		if (currHero.getEntityStats().getCurrHP() <= 0)
+			return;
+		
+		boolean cont = true;
+		while (cont) {
+			System.out.println();
 			map.print();
-			System.out.println("What would you like to do?");
-			printActions();
+			//System.out.println(currRowID + " " + currColID);
+			System.out.println("What would you like to do with " + currHero.getName() + "?");
+			printActions(currHero);
 			String input = in.nextLine();
+			System.out.println();
 			switch (input.toLowerCase()) {
 			case "w":
-				if (currHero.getCurrPlace().getRowID() != 0) {
-					this.map.updateBoard(map.getCurrCell().getRowID(), map.getCurrCell().getColID() + 1);
-					this.map.getCurrCell().activatePlace(currHero, this);
+				if (currRowID != 0) {
+					currHero.updatePosition(currRowID - 1, currColID, this);
+					cont = false;
+				} else {
+					System.out.println("You can't reach this location! Try moving elsewhere.");
 				}
 				break;
 			case "s":
-				if (currHero.getCurrPlace().getRowID() != map.getMapDimen() - 1) {
-					this.map.updateBoard(map.getCurrCell().getRowID(), map.getCurrCell().getColID() + 1);
-					this.map.getCurrCell().activatePlace(currHero, this);
+				if (currRowID != map.getMapDimen() - 1) {
+					currHero.updatePosition(currRowID + 1, currColID, this);
+					cont = false;
+				} else {
+					System.out.println("You can't reach this location! Try moving elsewhere.");
 				}
 				break;
 			case "a":
-				if (currHero.getCurrPlace().getRowID() != 0) {
-					this.map.updateBoard(map.getCurrCell().getRowID(), map.getCurrCell().getColID() + 1);
-					this.map.getCurrCell().activatePlace(currHero, this);
+				if (currColID != 0) {
+					currHero.updatePosition(currRowID, currColID - 1, this);
+					cont = false;
+				} else {
+					System.out.println("You can't reach this location! Try moving elsewhere.");
 				}
 				break;
 			case "d":
-				if (currHero.getCurrPlace().getRowID() != map.getMapDimen() - 1) {
-
-					this.map.updateBoard(map.getCurrCell().getRowID(), map.getCurrCell().getColID() + 1);
-					this.map.getCurrCell().activatePlace(currHero, this);
+				if (currColID != map.getMapDimen() - 1) {
+					currHero.updatePosition(currRowID, currColID + 1, this);
+					cont = false;
+				} else {
+					System.out.println("You can't reach this location! Try moving elsewhere.");
 				}
 				break;
 			case "i":
 				showInfo();
+				cont = false;
 				break;
 			case "m":
 				break;
 			case "e":
 				if (currHero.getCurrPlace() instanceof Nexus) {
-					this.map.getCurrCell().activatePlace(currHero, this);
+					currHero.getCurrPlace().activatePlace(currHero, this);
+					cont = false;
 				}
 				break;
 			case "c":
 				checkInventory();
+				cont = false;
 				break;
 			case "q":
 				quit();
+				cont = false;
 				break;
 			case "t":
-				teleport();
+				currHero.teleport(this);
+				cont = false;
 				break;
 			case "b":
-				back();
+				currHero.resetPosition();
+				cont = false;
 				break;
-			case "f":
-				if (currHero.getCurrPlace() instanceof Plains) {
-					map.getCurrCell().activatePlace(currHero, this);
-				}
 			default:
 				System.out.println("This move is currently invalid. Please input a proper value");
 				break;
 			}
 		}
+
+		if (currHero.getID() == player.getTeam().getHeroes().get(player.getTeam().getHeroes().size() - 1).getID()) {
+			this.moveMonsters();
+		}
 	}
 
-	public void moveMonster() {
-		LegendsMonster currMonster = monsters.get(monsterIndex);
-
-	}
-
-	public void updateStatus() {
-		moveMonster();
+	private void respawnHeroes() {
 		for (LegendsHero h : player.getTeam().getHeroes()) {
 			if (h.getEntityStats().getCurrHP() <= 0) {
 				h.respawn();
+			}
+		}
+	}
+
+	private void spawnNewMonsters() {
+		int priorSize = monsters.size();
+		this.generateMonsters(3);
+		int trackCounter = 0;
+		for (int i = priorSize; i < 3+priorSize; i++) {
+			Place monsterSpawnPlace = map.getPlace(trackCounter, 0, 0);
+			monsters.get(i).setCurrPlace(monsterSpawnPlace);
+			monsters.get(i).setSpawnPlace(monsterSpawnPlace);
+			monsterSpawnPlace.addMonsterOnCell(monsters.get(i));
+
+			trackCounter += 2;
+		}
+	}
+
+	public void moveMonsters() {
+		System.out.println("Monster Size: " + monsters.size());
+		for (LegendsMonster m : monsters) {
+			System.out.println("Current place: " + m.getCurrPlace());
+			m.updatePosition(m.getCurrPlace().getRowID() + 1, m.getCurrPlace().getColID(), this);
+		}
+	}
+
+	public void updateStatus() {
+		for (LegendsHero h : player.getTeam().getHeroes()) {
+			if (h.getEntityStats().getCurrHP() <= 0) {
+				h.getCurrPlace().removeHeroOnCell(h);
 			} else if (h.getCurrPlace() instanceof MonsterNexus) {
 				this.setStatus(State.WIN);
 			}
@@ -154,16 +225,13 @@ public class LegendsOfValor extends RPG {
 
 		for (int i = 0; i < monsters.size(); i++) {
 			if (monsters.get(i).getEntityStats().getCurrHP() <= 0) {
+				monsters.get(i).getCurrPlace().removeMonsterOnCell(monsters.get(i));
 				monsters.remove(i);
+				
 				i--;
-				generateMonsters(1);
 			} else if (monsters.get(i).getCurrPlace() instanceof PlayerNexus) {
 				this.setStatus(State.LOSE);
 			}
 		}
-
-		// We can also use this method to implement stats for these games that we would
-		// print after user quits
-		// Gets updated every turn after player input is processed
 	}
 }

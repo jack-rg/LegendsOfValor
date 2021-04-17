@@ -1,19 +1,16 @@
 package Util;
 
 import Map.Places.Place;
-import Map.Tracks.Path;
+import Map.Tracks.Boundary;
+import Map.Tracks.Lane;
 import Map.Tracks.Track;
 
-public class Map {
+public abstract class Map {
 	public Track[] map;
-	public Place currCell;
-	public Track currTrack;
 	public int numTracks;
 	public Token teamToken;
 	public int mapDimen;
 	public int totalCells;
-	public int currRow;
-	public int currCol;
 
 	public Map(int numTracks, int length) {
 		this.mapDimen = length;
@@ -23,33 +20,14 @@ public class Map {
 		initBoard();
 	}
 
-	public void initBoard() {
-		map = new Path[mapDimen];
-		for (int p = 0; p < mapDimen; p++) {
-			map[p] = new Path(p, mapDimen);
-		}
-		currTrack = map[0]; // first track is default
-		currCell = currTrack.getCurrPlace();
-		currCell.setActive(true);
-		currCol = currCell.getColID();
-		currRow = currCell.getRowID();
-	}
-
-	public void updateBoard(int nextRow, int nextCol) {
-		currCell.setActive(false);
-		currRow = nextRow;
-		currCol = nextCol;
-		currTrack.setCurrPlace(nextRow, nextCol);
-		currCell = currTrack.getCurrPlace();
-		currCell.setActive(true);
-	}
+	public abstract void initBoard();
 
 	public int getMapDimen() {
 		return mapDimen;
 	}
 
-	public Place getCurrCell() {
-		return currCell;
+	public Track[] getRawTracks() {
+		return map;
 	}
 
 	public Place getPlace(int laneID, int row, int col) {
@@ -58,10 +36,77 @@ public class Map {
 
 	// Print out board in nice fashion
 	public void print() {
-		for (Track t : map) {
-			t.printTrack();
-		}
+		for (int k = 0; k < mapDimen; k++) {
+			/* TOP ROW */
+			for (int i = 0; i < mapDimen; i++) {
+				System.out.print("+-------+");
+			}
+			/* TOP ROW */
 
+			/* HELPER METHOD */
+			String[] placeTokens = new String[mapDimen];
+			String[] monsterTokens = new String[mapDimen];
+			String[] heroTokens = new String[mapDimen];
+
+			int d = 0;
+			for (int i = 0; i < numTracks; i++) {
+
+				Track currentTrack = map[i];
+				if (currentTrack instanceof Lane) {
+					placeTokens[d] = (currentTrack.getPlace(k, 0).getToken().getDesign());
+					placeTokens[d + 1] = (currentTrack.getPlace(k, 1).getToken().getDesign());
+					if (currentTrack.getPlace(k, 0).getMonstersOnCell().size() > 0)
+						monsterTokens[d] = "VoV";
+					if (currentTrack.getPlace(k, 1).getMonstersOnCell().size() > 0)
+						monsterTokens[d + 1] = "VoV";
+					if (currentTrack.getPlace(k, 0).getHeroesOnCell().size() > 0)
+						heroTokens[d] = "\\o/";
+					if (currentTrack.getPlace(k, 1).getHeroesOnCell().size() > 0)
+						heroTokens[d + 1] = "\\o/";
+					d += 2;
+				}
+				if (currentTrack instanceof Boundary) {
+					placeTokens[d] = (currentTrack.getPlace(k, 0).getToken().getDesign());
+					d++;
+				}
+
+			}
+
+			/* HELPER METHOD */
+
+			/* MIDDLE ROW */
+			System.out.println();
+
+			for (int i = 0; i < mapDimen; i++) {
+				if (placeTokens[i] != null) {
+					System.out.print("|  " + placeTokens[i] + "  |");
+				} else {
+					System.out.print("|       |");
+				}
+			}
+			System.out.println();
+
+			for (int i = 0; i < mapDimen; i++) {
+				if (monsterTokens[i] != null) {
+					System.out.print("|" + monsterTokens[i] + " ");
+				} else {
+					System.out.print("|    ");
+				}
+				if (heroTokens[i] != null) {
+					System.out.print(heroTokens[i] + "|");
+				} else {
+					System.out.print("   |");
+				}
+			}
+			System.out.println();
+			/* MIDDLE ROW */
+		}
+		/* BOTTOM ROW */
+		for (int i = 0; i < mapDimen; i++) {
+			System.out.print("+-------+");
+		}
+		/* BOTTOM ROW */
+		System.out.println();
 	}
 
 }

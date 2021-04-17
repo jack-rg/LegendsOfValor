@@ -38,11 +38,11 @@ public class Path extends Track {
 	public Place generateLocation(int r, int c) {
 		double rng = Math.random() * 10;
 		if (rng > 5) {
-			return new Plains(r, c, new Token("==="), "None");
+			return new Plains(this, r, c, new Token("==="), "None");
 		} else if (rng > 2) {
-			return new Market(r, c, new Token("i^i"));
+			return new Market(this, r, c, new Token("i^i"));
 		} else {
-			return new Nature(r, c, new Token("XXX"));
+			return new Nature(this, r, c, new Token("XXX"));
 		}
 	}
 

@@ -2,10 +2,12 @@ package Game;
 
 import java.util.*;
 
+import Entities.LegendsHero;
 import Entities.LegendsPlayer;
 import Map.LegendsMap;
 import Util.Game;
 import Util.State;
+import Util.Token;
 
 import java.io.*;
 
@@ -16,12 +18,24 @@ public abstract class RPG extends Game {
 
 	public abstract void initObjects();
 
-	public abstract void printActions();
+	public abstract void printActions(LegendsHero currHero);
 
 	public abstract void updateStatus();
 
 	public abstract void processUserInput();
 
+	public void gameWon() {
+		System.out.println("YOU WON!");
+	}
+	
+	public void gameLost() {
+		System.out.println("YOU LOST!");
+	}
+	
+	public void gameQuit() {
+		System.out.println("YOU QUIT!");
+	}
+	
 	public void playGame() {
 		processUserInput();
 	}
@@ -41,7 +55,6 @@ public abstract class RPG extends Game {
 				.println("Are you sure you want to quit? Press Q to confirm, press any other key to continue playing.");
 		String quitting = in.nextLine();
 		if (quitting.equalsIgnoreCase("Q")) {
-			System.out.println("Thanks for playing! Goodbye :)");
 			setStatus(State.QUIT);
 
 		}
@@ -66,7 +79,10 @@ public abstract class RPG extends Game {
 	}
 
 	public void checkInventory() {
-		player.ge;
+		//TODO implement
+		for (LegendsHero h : player.getTeam()) {
+			h.getInventory().printInventory();
+		}
 	}
 
 	public void reset() {

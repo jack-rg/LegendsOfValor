@@ -16,6 +16,13 @@ public abstract class Game {
 			playGame(); // run through gameplay
 			updateStatus(); // update winner, replay, etc
 		}
+		
+		if (status == State.LOSE)
+			gameLost();
+		else if (status == State.WIN)
+			gameWon();
+		else
+			gameQuit();
 	}
 
 	public State getStatus() {
@@ -36,6 +43,12 @@ public abstract class Game {
 	public abstract void updateStatus(); // needs specification for continuation
 
 	public abstract void reset(); // how to start over
+	
+	public abstract void gameLost(); // how to start over
+	
+	public abstract void gameWon(); // how to start over
+	
+	public abstract void gameQuit(); // how to start over
 
 	// generic method for asking players if they want to continue playing or if they
 	// wish to complete

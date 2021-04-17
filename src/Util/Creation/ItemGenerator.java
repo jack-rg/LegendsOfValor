@@ -12,7 +12,7 @@ import Util.Random;
 
 public class ItemGenerator {
 	// Absolute maximum values for certain details
-	public static final int MAX_PRICE = 4990;
+	public static final int MAX_PRICE = 2500;
 	public static final int MIN_PRICE = 10;
 	public static final int LEVEL_TO_UNLOCK_EVERYTHING = 100;
 	

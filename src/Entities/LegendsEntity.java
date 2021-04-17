@@ -2,6 +2,7 @@ package Entities;
 
 import Entities.Classes.LegendsEntityClass;
 import Entities.Util.LegendsEntityStats;
+import Game.LegendsOfValor;
 import Map.Places.Place;
 
 public abstract class LegendsEntity {
@@ -37,6 +38,10 @@ public abstract class LegendsEntity {
 	public abstract void setLegendsEntityStats(LegendsEntityStats eStats);
 	
 	public abstract void respawn();
+	
+	public abstract void updatePosition(int x, int y, LegendsOfValor game);
+	
+	public abstract void resetPosition();
 	
 	/* ===================== */
 	/* Getter/Setter Methods */

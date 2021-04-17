@@ -4,6 +4,9 @@ import Entities.Classes.LegendsEntityClass;
 import Entities.Classes.LegendsMonsterClass;
 import Entities.Util.LegendsEntityStats;
 import Entities.Util.Monster.LegendsMonsterStats;
+import Game.LegendsOfValor;
+import Map.Places.Place;
+import Map.Places.Plains.Plains;
 
 public class LegendsMonster extends LegendsEntity {
 
@@ -23,8 +26,49 @@ public class LegendsMonster extends LegendsEntity {
 	}
 	
 	@Override
+	public void resetPosition() {
+		this.getCurrPlace().removeMonsterOnCell(this);
+		this.setCurrPlace(this.getSpawnPlace());
+		this.getCurrPlace().removeMonsterOnCell(this);
+	}
+	
+	@Override
+	public void updatePosition(int x, int y, LegendsOfValor game) {
+		int z = 0;
+		if (y == 0)
+			z = 1;
+		
+		Place toMoveTo = this.getCurrPlace().getCurrTrack().getPlace(x, y);
+		Place sideCell = this.getCurrPlace().getCurrTrack().getPlace(x, z);
+		
+		if (toMoveTo != null && toMoveTo.isAccessible()) {
+			if ((toMoveTo.getHeroesOnCell().size() > 0) && (toMoveTo instanceof Plains)) {
+				// Do Stuff
+				this.getCurrPlace().removeMonsterOnCell(this);
+				this.setCurrPlace(toMoveTo);
+				this.getCurrPlace().activatePlace(this, game);
+			} else if ((sideCell.getHeroesOnCell().size() > 0) && (sideCell instanceof Plains)) {
+				// Do Stuff
+				this.getCurrPlace().removeMonsterOnCell(this);
+				this.setCurrPlace(sideCell);
+				this.getCurrPlace().activatePlace(this, game);
+			} else if ((toMoveTo.getHeroesOnCell().size() == 0) && (sideCell.getHeroesOnCell().size() == 0)) {
+				// Do Stuff
+				this.getCurrPlace().removeMonsterOnCell(this);
+				this.setCurrPlace(toMoveTo);
+				this.getCurrPlace().activatePlace(this, game);
+			} else {
+				System.out.println("You can't reach this location! Try moving elsewhere.");
+			}
+		} else {
+			System.out.println("You can't reach this location! Try moving elsewhere.");
+		}
+	}
+	
+	@Override
 	public void respawn() {
 		this.setCurrPlace(this.getSpawnPlace());
+		this.getCurrPlace().addMonsterOnCell(this);
 		this.stats.regenHealth(1);
 	}
 	
