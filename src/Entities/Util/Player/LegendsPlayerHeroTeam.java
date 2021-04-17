@@ -31,7 +31,7 @@ public class LegendsPlayerHeroTeam implements Iterable<LegendsHero> {
 	private void createHeroes() {
 		this.resetHeroes();
 
-		int amountOfHeroes = this.getAmountOfHeroes();
+		int amountOfHeroes = 3;
 		boolean createOwnHeroes = this.getCreateOwnHeroes();
 
 		LegendsHero hero;
@@ -45,7 +45,7 @@ public class LegendsPlayerHeroTeam implements Iterable<LegendsHero> {
 				hero = pickableHeroes.get(Random.randomInt(0, pickableHeroes.size() - 1));
 
 				System.out.println();
-				System.out.println("Picked hero: " + hero);
+				System.out.println("Picked hero: " + hero.getName());
 				System.out.println("Hero Class: " + hero.getEntityClass());
 				System.out.println("Hero Stats: \n" + hero.getEntityStats());
 			}
@@ -54,6 +54,7 @@ public class LegendsPlayerHeroTeam implements Iterable<LegendsHero> {
 
 	}
 
+	@SuppressWarnings("unused")
 	private int getAmountOfHeroes() {
 		@SuppressWarnings("resource")
 		Scanner scanner = new Scanner(System.in);

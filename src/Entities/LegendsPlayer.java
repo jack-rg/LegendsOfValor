@@ -3,6 +3,9 @@ package Entities;
 import java.util.Scanner;
 
 import Entities.Util.Player.LegendsPlayerHeroTeam;
+import Game.LegendsHero;
+import Game.Util.LegendsGamePlayerHeroes;
+import Game.Util.LegendsPlayerGameStats;
 import Util.Player;
 import Util.Token;
 
@@ -11,6 +14,12 @@ public class LegendsPlayer extends Player {
 	private LegendsPlayerHeroTeam team;
 	private Token token;
 
+	public LegendsPlayer(int ID, Token token) {
+		super(ID);
+		this.setToken(token);
+		team = new LegendsPlayerHeroTeam();
+	}
+	
 	public LegendsPlayer(int ID, String name, Token token) {
 		super(ID, name);
 		this.setToken(token);

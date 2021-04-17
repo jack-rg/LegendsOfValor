@@ -2,98 +2,49 @@ package Game;
 
 import java.util.*;
 
+import Entities.LegendsHero;
+import Entities.LegendsPlayer;
+import Map.LegendsMap;
+import Map.Places.Nexus;
+import Map.Places.Plains.Plains;
 import Util.Game;
 import Util.State;
+import Util.Token;
 
 import java.io.*;
 
 public class LegendsOfValor extends Game {
 	public static int ENTITY_IDS;
 	public static int ITEM_IDS;
-	
+
 	public LegendsMap map;
 	public LegendsPlayer player;
-	private static Scanner in = new Scanner(System.in); // player input scanner
-
-	public EventHandler eventHandler;
+	private static Scanner in = new Scanner(System.in);
 
 	public LegendsMap getMap() {
 		return map;
 	}
 
 	public void initObjects() {
-		map = new Map(8, player.getToken());
-		chooseCharacters();
+		map = new LegendsMap(5, 8);
 	}
 
 	public void initPlayers() {
-		System.out.println("Welcome adventurer! What is your name?");
-		String name = in.nextLine();
-		player = new LegendsPlayer(name, new Token("\\o/"));
+		player = new LegendsPlayer(1, new Token("\\o/"));
 		initObjects();
-		readLines("introduction.txt");
 	}
 
 	public void playGame() {
 		processUserInput();
 	}
 
-	public void chooseCharacters() {
-		ArrayList<Hero> heroSelection = new ArrayList<Hero>();
-		loadCharacters(heroSelection);
-		System.out.println(
-				"In this game you may choose 1-3 heros to adventure with. Warriors are renowned for their strength and speed; paladins, for their speed and power; sorcerers, for their power and strength. Choose wisely... ");
-		boolean flag = true;
-		while (player.getTeam().size() < 3 && flag) {
-			printCharacters(heroSelection);
-			System.out.println("Please select a character to add to your team.");
-			if (player.getTeam().size() >= 1) {
-				System.out.println("Or, enter -1 to begin your quest!");
-			}
-			try {
-				int input = in.nextInt();
-				if (input == -1 && player.getTeam().size() >= 1) {
-					System.out.println("Off you go!");
-					flag = false;
-				} else {
-					Hero selection = heroSelection.remove(input);
-					System.out.println("You chose " + selection.getName() + ".");
-					player.addToTeam(selection);
-				}
-			} catch (Exception e) {
-				System.out.println("Please select a valid option.");
-				in.nextLine();
-			}
-		}
-		player.printTeamNames();
-		in.nextLine();
-	}
-
-	public void printCharacters(ArrayList<Hero> heroSelection) {
+	public void printCharacters(ArrayList<LegendsHero> heroSelection) {
 		System.out.format(
 				"  |      HERO NAME      | LEVEL |  HP  |  MANA  | MONEY | EXP | DEXTERITY  |  AGILITY  |  STRENGTH  |%n");
 		int i = 0;
-		for (Hero h : heroSelection) {
+		for (LegendsHero h : heroSelection) {
 			System.out.println(i + ": " + h);
 			i++;
-		}
-	}
-
-	public void loadCharacters(ArrayList<Hero> heroSelection) {
-		initItems(new File("Additionals/Paladins.txt"), heroSelection, HeroType.PALADIN);
-		initItems(new File("Additionals/Sorcerers.txt"), heroSelection, HeroType.SORCERER);
-		initItems(new File("Additionals/Warriors.txt"), heroSelection, HeroType.WARRIOR);
-	}
-
-	public void initItems(File file, ArrayList<Hero> heroSelection, HeroType id) {
-		try {
-			List<String> lines = readLines(file);
-			lines.remove(0); // remove header
-			for (int i = 0; i < lines.size(); i++) {
-				String[] parameters = lines.get(i).split("\\s+");
-				heroSelection.add(new Hero(parameters, id));
-			}
-		} catch (Exception e) {
 		}
 	}
 
@@ -127,13 +78,13 @@ public class LegendsOfValor extends Game {
 		System.out.format(leftAlignFormat, "check inventory", "c");
 		System.out.format(leftAlignFormat, "teleport", "t");
 		System.out.format(leftAlignFormat, "back", "b");
-		
-		if (map.getCurrCell() instanceof Common)
+
+		if (map.getCurrCell() instanceof Plains)
 			System.out.format(leftAlignFormat, "fight monster", "f");
-		
+
 		if (map.getCurrCell() instanceof Nexus)
 			System.out.format(leftAlignFormat, "enter market", "e");
-		
+
 		System.out.format(leftAlignFormat, "quit", "q");
 		System.out.format("+-----------------+------+%n");
 
@@ -219,20 +170,6 @@ public class LegendsOfValor extends Game {
 
 	public void checkInventory() {
 		// TODO
-	}
-
-	private void readLines(String fileName) {
-		File file = new File(fileName);
-		try {
-			Scanner fileReader = new Scanner(file);
-			while (fileReader.hasNext()) {
-				System.out.println(fileReader.nextLine());
-			}
-			fileReader.close();
-		} catch (Exception e) {
-			System.out.println("Error: issue reading from file");
-		}
-
 	}
 
 	public void updateStatus() {

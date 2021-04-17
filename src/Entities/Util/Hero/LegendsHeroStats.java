@@ -9,7 +9,7 @@ public class LegendsHeroStats extends LegendsEntityStats {
 	private int dexterity;
 	private int strength;
 	private int agility;
-	
+
 	private int mana;
 	private int maxMana;
 
@@ -21,45 +21,45 @@ public class LegendsHeroStats extends LegendsEntityStats {
 		this.strength = strength;
 		this.agility = agility;
 	}
-	
+
 	public void levelUp(LegendsEntityClass eClass) {
 		LegendsHeroClass classType = (LegendsHeroClass) eClass;
-		
+
 		this.increaseLevel();
 		int level = this.getLevel();
-		
+
 		this.increaseMaxHP(100 * level - this.getMaxHP());
 		this.maxMana = (int) Math.round(this.maxMana * 1.1);
 		this.strength = (int) Math.round(this.strength * classType.getStrengthBoost() + 1.05);
 		this.dexterity = (int) Math.round(this.dexterity * classType.getDexterityBoost() + 1.05);
 		this.agility = (int) Math.round(this.agility * classType.getAgilityBoost() + 1.05);
 	}
-	
+
 	public void increaseMaxMana(int toIncrease) {
 		this.maxMana += toIncrease;
 	}
-	
+
 	public void regenMana(double toRegen) {
 		this.mana = Math.min(this.maxMana, ((int) Math.round(this.maxMana * toRegen)) + this.mana);
 	}
-	
+
 	public boolean spendMana(int toSpend) {
 		if (this.mana - toSpend < 0)
 			return false;
-		
+
 		this.mana -= toSpend;
-		
+
 		return true;
 	}
 
 	public int getCurrMana() {
 		return this.mana;
 	}
-	
+
 	public int getMaxMana() {
 		return this.maxMana;
 	}
-	
+
 	public int getDexterity() {
 		return dexterity;
 	}
@@ -94,6 +94,12 @@ public class LegendsHeroStats extends LegendsEntityStats {
 		default:
 			System.out.println("ERROR!!");
 		}
+	}
+
+	public String toString() {
+		return "Current EXP: " + this.getEXP() + " | Current Level: " + this.getLevel() + " | HP: " + this.getCurrHP()
+				+ "/" + this.getMaxHP() + " | Mana: " + this.getCurrMana() + "/" + this.getMaxMana() + " \n"
+				+ "Dexterity: " + this.getDexterity() + " | Strength: " + this.getStrength() + " | Agility: " + this.getAgility();
 	}
 
 }

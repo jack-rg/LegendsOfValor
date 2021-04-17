@@ -15,7 +15,7 @@ public class Player extends Entity {
 	 * any individual one of these.
 	 */
 
-	public Player(int ID, Token token) {
+	public Player(int ID) {
 		super(ID, "Player #" + ID);
 		String name = this.getInitialName();
 		this.setName(name);
