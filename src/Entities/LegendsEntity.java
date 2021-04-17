@@ -2,11 +2,15 @@ package Entities;
 
 import Entities.Classes.LegendsEntityClass;
 import Entities.Util.LegendsEntityStats;
+import Map.Places.Place;
 
 public abstract class LegendsEntity {
 	
 	private String name;
 	private int ID;
+	
+	private Place currPlace;
+	private Place spawnPlace;
 	
 	/* =================== */
 	/* Constructor Methods */
@@ -32,6 +36,8 @@ public abstract class LegendsEntity {
 	public abstract LegendsEntityStats getEntityStats();
 	public abstract void setLegendsEntityStats(LegendsEntityStats eStats);
 	
+	public abstract void respawn();
+	
 	/* ===================== */
 	/* Getter/Setter Methods */
 	/* ===================== */
@@ -50,6 +56,22 @@ public abstract class LegendsEntity {
 	
 	public String getName() {
 		return this.name;
+	}
+	
+	public Place getCurrPlace() {
+		return currPlace;
+	}
+	
+	public void setCurrPlace(Place currPlace) {
+		this.currPlace = currPlace;
+	}
+	
+	public Place getSpawnPlace() {
+		return spawnPlace;
+	}
+	
+	public void setSpawnPlace(Place spawnPlace) {
+		this.spawnPlace = spawnPlace;
 	}
 
 	/* =========== */

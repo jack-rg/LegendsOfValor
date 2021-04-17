@@ -1,5 +1,5 @@
 package Util;
 
 public enum State {
-	  PLAYING, QUIT;
+	  PLAYING, QUIT, WIN, LOSE;
 }

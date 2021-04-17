@@ -26,7 +26,7 @@ public class Market extends Place {
 
 	public void activatePlace(LegendsEntity e, LegendsOfValor game) {
 		if (e instanceof LegendsMonster) {
-
+			//Optional discourse for monsters
 		} else {
 			game.getMap().updateBoard(this.getRowID(), this.getColID());
 			System.out.println("Your hero " + e.getName() + " stumbles past the town market!");

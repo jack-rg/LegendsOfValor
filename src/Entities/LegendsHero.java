@@ -28,6 +28,13 @@ public class LegendsHero extends LegendsEntity {
 	}
 	
 	@Override
+	public void respawn() {
+		this.setCurrPlace(this.getSpawnPlace());
+		this.stats.regenHealth(1);
+		this.stats.regenMana(1);
+	}
+	
+	@Override
 	public LegendsEntityClass getEntityClass() {
 		return this.heroClass;
 	}

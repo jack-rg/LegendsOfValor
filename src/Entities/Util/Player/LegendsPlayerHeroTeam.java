@@ -170,13 +170,16 @@ public class LegendsPlayerHeroTeam implements Iterable<LegendsHero> {
 
 		@Override
 		public boolean hasNext() {
-			return this.index < getHeroes().size();
+			return getHeroes().size() > 0;
 		}
 
 		@Override
 		public LegendsHero next() {
 			LegendsHero h = getHeroes().get(index);
 			this.index++;
+			
+			if (this.index >= getHeroes().size())
+				this.index = 0;
 
 			return h;
 		}
