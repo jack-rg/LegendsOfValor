@@ -11,7 +11,8 @@ public class LegendsWeapon extends LegendsItem {
 	private int currentDurability;
 	private int maxDurability;
 
-	public LegendsWeapon(int ID, String name, int cost, int minLevel, int damage, boolean dualHanded, int maxDurability) {
+	public LegendsWeapon(int ID, String name, int cost, int minLevel, int damage, boolean dualHanded,
+			int maxDurability) {
 		super(ID, name, cost, minLevel);
 		this.setDamage(damage);
 		this.setDualHanded(dualHanded);
@@ -69,8 +70,12 @@ public class LegendsWeapon extends LegendsItem {
 	}
 
 	public String toString() {
-		return String.format("%-15s%-5d%-5d%-5d%-2b %n", getName(), getCost(), getMinLevel(), getDamage(),
-				getDualHanded());
+		if (this.getDualHanded()) {
+			return "   "+this.getName() + " is a 2-handed weapon that deals " + this.getDamage()
+					+ " in damage and has durability " + this.getCurrentDurability() + "/" + this.getMaxDurability();
+		} else {
+			return this.getName() + " is a 1-handed weapon that deals " + this.getDamage()
+					+ " in damage and has durability " + this.getCurrentDurability() + "/" + this.getMaxDurability();
+		}
 	}
-
 }

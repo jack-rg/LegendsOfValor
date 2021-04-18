@@ -1,33 +1,29 @@
 package Map.Places;
 
-import java.util.*;
 import Entities.LegendsEntity;
 import Entities.LegendsHero;
 import Entities.LegendsMonster;
 import Game.LegendsOfValor;
 import Items.LegendsArmour;
 import Items.LegendsItem;
-import Items.LegendsPotion;
 import Items.LegendsSpell;
 import Items.LegendsWeapon;
 import Map.Tracks.Track;
+import Util.Inventory;
 import Util.Token;
-import Util.Creation.ItemGenerator;
 
 public class Market extends Place {
-	public ArrayList<LegendsItem> inventory;
+	public Inventory inventory;
 
 	public Market(Track track, int row, int col, Token marketToken) {
 		super(track, row, col, true, marketToken);
-		inventory = ItemGenerator.generateItems(10);
+		inventory = new Inventory(10);
 	}
 
 	public void activatePlace(LegendsEntity e, LegendsOfValor game) {
 		if (e instanceof LegendsMonster) {
-			this.addMonsterOnCell(((LegendsMonster) e));
 			// Optional discourse for monsters
 		} else {
-			this.addHeroOnCell(((LegendsHero) e));
 			System.out.println("Your hero " + e.getName() + " stumbles past the town market!");
 			System.out.println("Would you like to enter? [Y/N]");
 			while (true) {
@@ -49,66 +45,11 @@ public class Market extends Place {
 		}
 	}
 
-	public String concatLine(int numSpaces, String toPrint) {
-		String ret = "";
-		for (int i = 0; i < numSpaces; i++) {
-			ret += toPrint;
-		}
-		return ret;
-	}
-
-	public void printHelperLine() {
-		System.out.println("+" + concatLine(6, "-") + "+" + concatLine(52, "-") + "+" + concatLine(6, "-") + "+"
-				+ concatLine(5, "-") + "+" + concatLine(12, "-") + "+" + concatLine(9, "-") + "+" + concatLine(8, "-")
-				+ "+" + concatLine(9, "-") + "+" + concatLine(12, "-") + "+" + concatLine(12, "-") + "+"
-				+ concatLine(6, "-") + "+");
-
-	}
-
-	public void printShopInventory(ArrayList<LegendsItem> inventory) {
-		String weaponsFormat = "| [%-2d] | %-50s | %-4d | %-3d | %-10s | %-6s  |  %-4d  |  %-5b  | %-10s |   %-6s   | %-4s | %n";
-		String armourFormat = "| [%-2d] | %-50s | %-4d | %-3d | %-10s | %.4f  |  %-4s  |  %-5s  | %-10s |   %-6s   | %-4s | %n";
-		String spellFormat = "| [%-2d] | %-50s | %-4d | %-3d | %-10s | %-6s  |  %-4d  |  %-5s  | %-10s |   %2.4f   | %-4d | %n";
-		String potionFormat = "| [%-2d] | %-50s | %-4d | %-3d | %-10s | %-6s  |  %-4s  |  %-5s  | %-10s |   %2.4f   | %-4s | %n";
-		String headerFormat = "| %-4s | %-50s | %-4s | %-3s | %-10s | %-6s | %-4s | %-5s | %-10s | %-6s | %-4s | %n";
-
-		int numSpaces = 147;
-		System.out.println("+" + concatLine(numSpaces, "-") + "+");
-		System.out.println("|" + concatLine(numSpaces, " ") + "|");
-		System.out.println(
-				"|" + concatLine((numSpaces / 2) - 4, " ") + "INVENTORY " + concatLine((numSpaces / 2) - 5, " ") + "|");
-		System.out.println("|" + concatLine(numSpaces, " ") + "|");
-		printHelperLine();
-		System.out.printf(headerFormat, "##", concatLine(23, " ") + "NAME" + concatLine(23, " "), "COST", "LVL",
-				"   CLASS  ", "DEFENSE", "DAMAGE", "2 HAND?", "  ABILITY ", "MULTIPLIER", "MANA");
-		printHelperLine();
-
-		for (int i = 0; i < inventory.size(); i++) {
-			LegendsItem currItem = inventory.get(i);
-			if (currItem instanceof LegendsWeapon) {
-				System.out.printf(weaponsFormat, i, currItem.getName(), currItem.getCost(), currItem.getMinLevel(),
-						"WEAPON", "", ((LegendsWeapon) currItem).getDamage(),
-						((LegendsWeapon) currItem).getDualHanded(), "", "", "");
-			} else if (currItem instanceof LegendsArmour) {
-				System.out.printf(armourFormat, i, currItem.getName(), currItem.getCost(), currItem.getMinLevel(),
-						"ARMOR", ((LegendsArmour) currItem).getDefenseMultiplier(), "", "", "", "", "");
-			} else if (currItem instanceof LegendsSpell) {
-				System.out.printf(spellFormat, i, currItem.getName(), currItem.getCost(), currItem.getMinLevel(),
-						"SPELL", "", ((LegendsSpell) currItem).getMaxDamage(), "",
-						((LegendsSpell) currItem).getTargetAbility(), ((LegendsSpell) currItem).getMultiplier(),
-						((LegendsSpell) currItem).getManaRequired());
-			} else if (currItem instanceof LegendsPotion) {
-				System.out.printf(potionFormat, i, currItem.getName(), currItem.getCost(), currItem.getMinLevel(),
-						"POTION", "", "", "", ((LegendsPotion) currItem).getTargetAbility(),
-						((LegendsPotion) currItem).getMultiplier(), "");
-			}
-			printHelperLine();
-		}
-	}
+	
 
 	public void marketSequence(LegendsHero h, LegendsOfValor game) {
-		if (inventory.size() == 0)
-			inventory = ItemGenerator.generateItems(10);
+		if (inventory.isEmpty())
+			inventory = new Inventory(10);
 
 		System.out.println();
 		System.out.println("Welcome to the shop!");
@@ -124,7 +65,7 @@ public class Market extends Place {
 					sellSequence(h);
 					in.nextLine();
 				} else if (input.equalsIgnoreCase("i")) {
-					showInfo(h);
+					showInfo();
 				} else if (input.equalsIgnoreCase("q")) {
 					game.quit();
 					break;
@@ -147,14 +88,14 @@ public class Market extends Place {
 		while (true) {
 			System.out.println("Please pick what you'd like to buy! [Or enter -1 to leave]");
 
-			printShopInventory(h.getInventory().getRawInventory());
+			h.getInventory().printInventory();
 
 			int itemChoice = in.nextInt();
 
 			if (itemChoice == -1)
 				break;
-			else if (itemChoice >= 0 && itemChoice < h.getInventory().getRawInventory().size()) {
-				attemptSellItem(h.getInventory().getRawInventory().remove(itemChoice), h);
+			else if (itemChoice >= 0 && itemChoice < h.getInventory().size()) {
+				attemptSellItem(h.getInventory().remove(itemChoice), h);
 				break;
 			} else
 				System.out.println("Invalid choice! Attempting again!");
@@ -175,7 +116,7 @@ public class Market extends Place {
 		System.out.println("You have sold " + item.getName());
 		System.out.println();
 
-		inventory.add(item);
+		h.getInventory().remove(item);
 	}
 
 	public void shopSequence(LegendsHero h) {
@@ -185,7 +126,7 @@ public class Market extends Place {
 		while (true) {
 			System.out.println("Please pick what you'd like to buy! [Or enter -1 to leave]");
 
-			printShopInventory(inventory);
+			inventory.printInventory();
 			choice = in.nextInt();
 
 			if (choice == -1)
@@ -219,12 +160,8 @@ public class Market extends Place {
 		if (item instanceof LegendsSpell) {
 			h.getInventory().learnSpell((LegendsSpell) item);
 		} else {
-			h.getInventory().addItem(item);
+			h.getInventory().add(item);
 		}
-	}
-
-	private void showInfo(LegendsHero h) {
-		// TODO show info
 	}
 
 	public void printActions() {
@@ -238,5 +175,22 @@ public class Market extends Place {
 		System.out.format(leftAlignFormat, "LEAVE", "0");
 		System.out.format("+-----------------+------+%n");
 
+	}
+
+	@Override
+	public void showInfo() {
+		System.out.format("+------------------------+%n");
+		System.out.format("|        HERO INFO       |%n");
+		System.out.format("+------------------------+%n");
+		LegendsOfValor.helperLine(127);
+		System.out.printf(
+				"|                        NAME                        | LEVEL |  HP   |  MANA   |  COINS  |  EXP  |   DEX   | AGILITY | STRENGTH | %n");
+		LegendsOfValor.helperLine(127);
+		for (LegendsHero h : getHeroesOnCell()) {
+			System.out.print(h);
+			LegendsOfValor.helperLine(127);
+		}
+
+		
 	}
 }

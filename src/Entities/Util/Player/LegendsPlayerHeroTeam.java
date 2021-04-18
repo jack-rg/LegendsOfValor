@@ -6,6 +6,7 @@ import java.util.Scanner;
 
 import Entities.LegendsHero;
 import Util.Random;
+import Util.Token;
 import Util.Creation.EntityGenerator;
 
 public class LegendsPlayerHeroTeam implements Iterable<LegendsHero> {
@@ -44,6 +45,10 @@ public class LegendsPlayerHeroTeam implements Iterable<LegendsHero> {
 				ArrayList<LegendsHero> pickableHeroes = EntityGenerator.generateHeroes(2);
 				hero = pickableHeroes.get(Random.randomInt(0, pickableHeroes.size() - 1));
 
+				
+				hero.setToken(new Token("\\o/"));
+				hero.setName(hero.getName());
+				
 				System.out.println();
 				System.out.println("Picked hero: " + hero.getName());
 				System.out.println("Hero Class: " + hero.getEntityClass());

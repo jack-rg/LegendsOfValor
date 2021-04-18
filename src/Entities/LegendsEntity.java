@@ -4,6 +4,7 @@ import Entities.Classes.LegendsEntityClass;
 import Entities.Util.LegendsEntityStats;
 import Game.LegendsOfValor;
 import Map.Places.Place;
+import Util.Token;
 
 public abstract class LegendsEntity {
 	
@@ -12,6 +13,8 @@ public abstract class LegendsEntity {
 	
 	private Place currPlace;
 	private Place spawnPlace;
+	
+	private Token token;
 	
 	/* =================== */
 	/* Constructor Methods */
@@ -79,6 +82,14 @@ public abstract class LegendsEntity {
 		this.spawnPlace = spawnPlace;
 	}
 
+	public Token getToken() {
+		return token;
+	}
+
+	public void setToken(Token token) {
+		this.token = token;
+	}
+	
 	/* =========== */
 	/* Aux Methods */
 	/* =========== */

@@ -14,7 +14,7 @@ public class Lane extends Track {
 	private Place[][] places;
 	private int length;
 	private boolean isActive;
-	
+
 	public Lane(int laneID, int length) {
 		super(laneID);
 		this.length = length;
@@ -50,7 +50,7 @@ public class Lane extends Track {
 	}
 
 	public Place getPlace(int row, int col) {
-		if(row >= length || col >= 2){
+		if (row >= length || col >= 2) {
 			return null;
 		}
 		return places[row][col];
@@ -68,9 +68,13 @@ public class Lane extends Track {
 		isActive = activity;
 	}
 
-	public int getLength() {return length;}
+	public int getLength() {
+		return length;
+	}
 
-	public void setLength(int i) {length=i;}
+	public void setLength(int i) {
+		length = i;
+	}
 
 	public void printTrack() {
 		System.out.println("insert print pls");

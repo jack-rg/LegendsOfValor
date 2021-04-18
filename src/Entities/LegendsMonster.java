@@ -21,41 +21,41 @@ public class LegendsMonster extends LegendsEntity {
 
 	public void levelUp() {
 		this.stats.levelUp(this.monsterClass);
-		
+
 		System.out.println(this.getName() + " has leveled up to level " + this.stats.getLevel() + "!");
 	}
-	
+
 	@Override
 	public void resetPosition() {
 		this.getCurrPlace().removeMonsterOnCell(this);
 		this.setCurrPlace(this.getSpawnPlace());
-		this.getCurrPlace().removeMonsterOnCell(this);
+		this.getCurrPlace().addMonsterOnCell(this);
 	}
-	
+
 	@Override
 	public void updatePosition(int x, int y, LegendsOfValor game) {
 		int z = 0;
 		if (y == 0)
 			z = 1;
-		
+
 		Place toMoveTo = this.getCurrPlace().getCurrTrack().getPlace(x, y);
 		Place sideCell = this.getCurrPlace().getCurrTrack().getPlace(x, z);
-		
+
 		if (toMoveTo != null && toMoveTo.isAccessible()) {
 			if ((toMoveTo.getHeroesOnCell().size() > 0) && (toMoveTo instanceof Plains)) {
-				// Do Stuff
 				this.getCurrPlace().removeMonsterOnCell(this);
 				this.setCurrPlace(toMoveTo);
+				this.getCurrPlace().addMonsterOnCell(this);
 				this.getCurrPlace().activatePlace(this, game);
 			} else if ((sideCell.getHeroesOnCell().size() > 0) && (sideCell instanceof Plains)) {
-				// Do Stuff
 				this.getCurrPlace().removeMonsterOnCell(this);
 				this.setCurrPlace(sideCell);
+				this.getCurrPlace().addMonsterOnCell(this);
 				this.getCurrPlace().activatePlace(this, game);
 			} else if ((toMoveTo.getHeroesOnCell().size() == 0) && (sideCell.getHeroesOnCell().size() == 0)) {
-				// Do Stuff
 				this.getCurrPlace().removeMonsterOnCell(this);
 				this.setCurrPlace(toMoveTo);
+				this.getCurrPlace().addMonsterOnCell(this);
 				this.getCurrPlace().activatePlace(this, game);
 			} else {
 				System.out.println("You can't reach this location! Try moving elsewhere.");
@@ -64,14 +64,14 @@ public class LegendsMonster extends LegendsEntity {
 			System.out.println("You can't reach this location! Try moving elsewhere.");
 		}
 	}
-	
+
 	@Override
 	public void respawn() {
 		this.setCurrPlace(this.getSpawnPlace());
 		this.getCurrPlace().addMonsterOnCell(this);
 		this.stats.regenHealth(1);
 	}
-	
+
 	@Override
 	public LegendsEntityClass getEntityClass() {
 		return monsterClass;
@@ -98,8 +98,12 @@ public class LegendsMonster extends LegendsEntity {
 			System.out.println("Invalid Entity Stats Type!");
 			return;
 		}
-
 		this.stats = (LegendsMonsterStats) eStats;
+	}
+
+	public String toString() {
+		return String.format("| %-50s | %-5d | %-5d | %-5d | %.3f | %-7d | %-7d  |%n", getName(), stats.getLevel(),
+				stats.getCurrHP(), stats.getEXP(), stats.getDodge(), stats.getDefense(), stats.getStrength());
 	}
 
 }

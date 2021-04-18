@@ -7,8 +7,9 @@ import Items.LegendsArmour;
 import Items.LegendsItem;
 import Items.LegendsSpell;
 import Items.LegendsWeapon;
+import Util.Inventory;
 
-public class LegendsHeroInventory {
+public class LegendsHeroInventory extends Inventory {
 
 	private LegendsWeapon equippedWeapon;
 	private LegendsHeroArmour equippedArmour;
@@ -27,11 +28,6 @@ public class LegendsHeroInventory {
 
 		this.balance = 100000;
 
-		this.items = new ArrayList<LegendsItem>();
-	}
-
-	public void addItem(LegendsItem item) {
-		this.items.add(item);
 	}
 	
 	public void learnSpell(LegendsSpell spell) {
@@ -60,10 +56,6 @@ public class LegendsHeroInventory {
 
 	public ArrayList<LegendsSpell> getKnownSpells() {
 		return this.knownSpells;
-	}
-
-	public ArrayList<LegendsItem> getRawInventory() {
-		return this.items;
 	}
 	
 	public void replaceEquippedWeapon(LegendsWeapon weapon) {
@@ -119,7 +111,7 @@ public class LegendsHeroInventory {
 			
 			switch(choice) {
 			case 1:
-				printInventory();
+				printHeroInventory();
 				break;
 			case 2:
 				return this.useItem();
@@ -143,8 +135,8 @@ public class LegendsHeroInventory {
 			this.printGeneralItems();
 			choice = scanner.nextInt();
 			
-			if (choice >= 0 && choice < this.items.size()) {
-				return this.items.remove(choice);
+			if (choice >= 0 && choice < this.size()) {
+				return this.remove(choice);
 			}
 			
 			System.out.println("Invalid selection! Trying again!");
@@ -176,7 +168,7 @@ public class LegendsHeroInventory {
 		}
 	}
 
-	public void printInventory() {
+	public void printHeroInventory() {
 		System.out.format("+------------------------+%n");
 		System.out.format("|        INVENTORY       |%n");
 		System.out.format("+------------------------+%n");
@@ -189,7 +181,8 @@ public class LegendsHeroInventory {
 	private void printBalance() {
 		System.out.format("Current Balance: " + this.balance + "%n");
 	}
-	
+
+
 	private void printEquipped() {
 		System.out.format("+-------------------------------+%n");
 		System.out.format("|          Equipped Gear        |%n");
@@ -198,7 +191,12 @@ public class LegendsHeroInventory {
 		System.out.format(this.equippedArmour + "%n");
 		System.out.format("%n");
 		System.out.format("Equipped Weapon:%n");
-		System.out.format(this.equippedWeapon + "%n");
+		if(this.equippedWeapon != null){
+		   System.out.format(this.equippedWeapon + "%n");
+		}
+		else{
+		   System.out.format("No weapon equipped.%n");
+		}
 	}
 	private void printKnownSpells() {
 		System.out.format("+------------------------+%n");
@@ -211,7 +209,7 @@ public class LegendsHeroInventory {
 		System.out.format("+-------------------------------+%n");
 		System.out.format("|          General Items        |%n");
 		System.out.format("+-------------------------------+%n");
-		printItems(this.items);
+		printItems(this.getRawInventory());
 	}
 
 	private void printItems(ArrayList<?> list) {
@@ -219,4 +217,5 @@ public class LegendsHeroInventory {
 			System.out.print(i + ": " + list.get(i));
 		}
 	}
+
 }

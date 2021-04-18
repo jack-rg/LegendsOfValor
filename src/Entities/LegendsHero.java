@@ -24,39 +24,42 @@ public class LegendsHero extends LegendsEntity {
 		this.stats = stats;
 		this.heroClass = heroClass;
 	}
-	
+
 	public void levelUp() {
 		this.stats.levelUp(this.heroClass);
-		
+
 		this.inventory.gainMoney(100);
-		
+
 		System.out.println(this.getName() + " has leveled up to level " + this.stats.getLevel() + "!");
 	}
-	
+
 	@Override
 	public void updatePosition(int x, int y, LegendsOfValor game) {
 		int z = 0;
 		if (y == 0)
 			z = 1;
-		
+
 		Place toMoveTo = this.getCurrPlace().getCurrTrack().getPlace(x, y);
 		Place sideCell = this.getCurrPlace().getCurrTrack().getPlace(x, z);
-		
+
 		if (toMoveTo != null && toMoveTo.isAccessible()) {
 			if ((toMoveTo.getMonstersOnCell().size() > 0) && (toMoveTo instanceof Plains)) {
 				// Do Stuff
 				this.getCurrPlace().removeHeroOnCell(this);
 				this.setCurrPlace(toMoveTo);
+				this.getCurrPlace().addHeroOnCell(this);
 				this.getCurrPlace().activatePlace(this, game);
 			} else if ((sideCell.getMonstersOnCell().size() > 0) && (sideCell instanceof Plains)) {
 				// Do Stuff
 				this.getCurrPlace().removeHeroOnCell(this);
 				this.setCurrPlace(sideCell);
+				this.getCurrPlace().addHeroOnCell(this);
 				this.getCurrPlace().activatePlace(this, game);
 			} else if ((toMoveTo.getMonstersOnCell().size() == 0) && (sideCell.getMonstersOnCell().size() == 0)) {
 				// Do Stuff
 				this.getCurrPlace().removeHeroOnCell(this);
 				this.setCurrPlace(toMoveTo);
+				this.getCurrPlace().addHeroOnCell(this);
 				this.getCurrPlace().activatePlace(this, game);
 			} else {
 				System.out.println("You can't reach this location! Try moving elsewhere.");
@@ -65,14 +68,14 @@ public class LegendsHero extends LegendsEntity {
 			System.out.println("You can't reach this location! Try moving elsewhere.");
 		}
 	}
-	
+
 	@Override
 	public void resetPosition() {
 		this.getCurrPlace().removeHeroOnCell(this);
 		this.setCurrPlace(this.getSpawnPlace());
 		this.getCurrPlace().addHeroOnCell(this);
 	}
-	
+
 	@Override
 	public void respawn() {
 		this.setCurrPlace(this.getSpawnPlace());
@@ -80,44 +83,51 @@ public class LegendsHero extends LegendsEntity {
 		this.stats.regenMana(1);
 		this.getCurrPlace().addHeroOnCell(this);
 	}
-	
+
 	@Override
 	public LegendsEntityClass getEntityClass() {
 		return this.heroClass;
 	}
-	
+
 	public void teleport(LegendsOfValor game) {
-		
+
 		int[] coords = this.tpCoord(game);
 		if (coords == null)
 			return;
-		
+
 		Place toTPTo = game.getMap().getPlace(coords[0], coords[1], coords[2]);
-		
-		int z = 0;
-		if (coords[2] == 0)
-			z = 1;
-		
-		Place sideCell = game.getMap().getPlace(coords[0], coords[1], z);
-		
-		if (toTPTo != null && toTPTo.isAccessible()) {
-			if ((toTPTo.getMonstersOnCell().size() > 0) && (toTPTo instanceof Plains)) {
-				// Do Stuff
-				this.getCurrPlace().removeHeroOnCell(this);
-				this.setCurrPlace(toTPTo);
-				this.getCurrPlace().activatePlace(this, game);
-			} else if ((sideCell.getMonstersOnCell().size() > 0) && (sideCell instanceof Plains)) {
-				// Do Stuff
-				this.getCurrPlace().removeHeroOnCell(this);
-				this.setCurrPlace(sideCell);
-				this.getCurrPlace().activatePlace(this, game);
-			} else if ((toTPTo.getMonstersOnCell().size() == 0) && (toTPTo.getMonstersOnCell().size() == 0)) {
-				// Do Stuff
-				this.getCurrPlace().removeHeroOnCell(this);
-				this.setCurrPlace(toTPTo);
-				this.getCurrPlace().activatePlace(this, game);
-			} else {
+
+		if (toTPTo.getCurrTrack() instanceof Lane && toTPTo instanceof Plains) {
+			Place[][] rawPlaces = ((Lane) toTPTo.getCurrTrack()).getRawPlaces();
+			int minRow = -1;
+			for (int i = rawPlaces.length - 1; i > -1; i--) {
+				if (rawPlaces[i][0].getMonstersOnCell().size() > 0 || rawPlaces[i][1].getMonstersOnCell().size() > 0) {
+					minRow = i;
+					break;
+				}
+			}
+			System.out.println(minRow);
+			if (minRow > coords[1]) {
 				System.out.println("You can't reach this location! Try moving elsewhere.");
+			} else if (minRow == coords[1]) {
+				if ((rawPlaces[minRow][0].getMonstersOnCell().size() > 0)) {
+					this.getCurrPlace().removeHeroOnCell(this);
+					this.setCurrPlace(rawPlaces[minRow][0]);
+					this.getCurrPlace().addHeroOnCell(this);
+					this.getCurrPlace().activatePlace(this, game);
+				} else if ((rawPlaces[minRow][1].getMonstersOnCell().size() > 0)) {
+					this.getCurrPlace().removeHeroOnCell(this);
+					this.setCurrPlace(rawPlaces[minRow][1]);
+					this.getCurrPlace().addHeroOnCell(this);
+					this.getCurrPlace().activatePlace(this, game);
+				} else {
+					System.out.println("You can't reach this location! Try moving elsewhere.");
+				}
+			} else {
+				this.getCurrPlace().removeHeroOnCell(this);
+				this.setCurrPlace(toTPTo);
+				this.getCurrPlace().addHeroOnCell(this);
+				this.getCurrPlace().activatePlace(this, game);
 			}
 		} else {
 			System.out.println("You can't reach this location! Try moving elsewhere.");
@@ -129,17 +139,17 @@ public class LegendsHero extends LegendsEntity {
 		@SuppressWarnings("resource")
 		Scanner in = new Scanner(System.in);
 		boolean leave = false;
-		
+
 		String laneResponse = "";
 		int laneRow = 0;
 		int laneCol = 0;
-		
+
 		boolean contOne = true;
 		while (contOne) {
 			System.out.println("Please enter the Lane you'd like to teleport to? ['Top'/'Mid'/'Bot'/'Leave']");
 			laneResponse = in.nextLine();
-			
-			switch(laneResponse) {
+
+			switch (laneResponse) {
 			case "Top":
 			case "Mid":
 			case "Bot":
@@ -158,16 +168,16 @@ public class LegendsHero extends LegendsEntity {
 			numLane = 2;
 		else if (laneResponse.equals("Bot"))
 			numLane = 4;
-		
+
 		if (leave)
 			return null;
-		
+
 		boolean contTwo = true;
-		while(contTwo) {
+		while (contTwo) {
 			System.out.println("Please enter the Row # you'd like to teleport to? [Or -1 to leave]");
-			
+
 			laneRow = in.nextInt();
-			
+
 			if (laneRow == -1) {
 				leave = true;
 				contTwo = false;
@@ -176,16 +186,16 @@ public class LegendsHero extends LegendsEntity {
 			} else
 				System.out.println("Invalid input! Trying again!");
 		}
-		
+
 		if (leave)
 			return null;
-		
+
 		boolean contThree = true;
-		while(contThree) {
+		while (contThree) {
 			System.out.println("Please enter the Col # you'd like to teleport to? [Or -1 to leave]");
-			
+
 			laneCol = in.nextInt();
-			
+
 			if (laneCol == -1) {
 				leave = true;
 				contThree = false;
@@ -196,13 +206,13 @@ public class LegendsHero extends LegendsEntity {
 			} else
 				System.out.println("Invalid input! Trying again!");
 		}
-		
+
 		if (leave)
 			return null;
-		
-		return new int[] {numLane, laneRow, laneCol};
+
+		return new int[] { numLane, laneRow, laneCol };
 	}
-	
+
 	@Override
 	public void setEntityClass(LegendsEntityClass eClass) {
 		if (!(eClass instanceof LegendsHeroClass)) {
@@ -212,7 +222,7 @@ public class LegendsHero extends LegendsEntity {
 
 		this.heroClass = (LegendsHeroClass) eClass;
 	}
-	
+
 	@Override
 	public LegendsEntityStats getEntityStats() {
 		return this.stats;
@@ -227,17 +237,17 @@ public class LegendsHero extends LegendsEntity {
 
 		this.stats = (LegendsHeroStats) eStats;
 	}
-	
+
 	public LegendsHeroInventory getInventory() {
 		return this.inventory;
 	}
-	
+
 	public void setInventory(LegendsHeroInventory inventory) {
 		this.inventory = inventory;
 	}
 
 	public String toString() {
-		return String.format("%-20s | %-5d | %-5d | %-5d | %-5d | %-5d | %-5d | %-5d | %-5d |", getName(),
+		return String.format("| %-50s | %-5d | %-5d | %-7d | %-7d | %-5d | %-7d | %-7d | %-7d  | %n", getName(),
 				stats.getLevel(), stats.getCurrHP(), stats.getCurrMana(), inventory.getBalance(), stats.getEXP(),
 				stats.getDexterity(), stats.getAgility(), stats.getStrength());
 	}

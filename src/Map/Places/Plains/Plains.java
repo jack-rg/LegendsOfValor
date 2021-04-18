@@ -48,11 +48,6 @@ public class Plains extends Place {
 	}
 
 	public void activatePlace(LegendsEntity e, LegendsOfValor game) {
-		if (e instanceof LegendsHero)
-			this.getHeroesOnCell().add((LegendsHero) e);
-		else if (e instanceof LegendsMonster)
-			this.getMonstersOnCell().add((LegendsMonster) e);
-
 		System.out.println("Your party sets out along the road!");
 
 		if (this.getHeroesOnCell().size() >= 1 && this.getMonstersOnCell().size() >= 1) {
@@ -65,15 +60,14 @@ public class Plains extends Place {
 
 		makeMatchings();
 
-		while (!matchings.isEmpty()
-				&& game.getStatus().equals(State.PLAYING)) {
+		while (!matchings.isEmpty() && game.getStatus().equals(State.PLAYING)) {
 			if (!leftOverHeroes.isEmpty() && !leftOverMonsters.isEmpty())
 				reMatch();
 
 			for (LegendsHero h : matchings.keySet())
 				heroFight(h, matchings.get(h), game);
 		}
-		
+
 		if (leftOverHeroes.size() > 0)
 			System.out.println("Heroes won!");
 		else if (leftOverMonsters.size() > 0)
@@ -159,7 +153,7 @@ public class Plains extends Place {
 	private void preformMove(String nextMove, LegendsHero h, LegendsMonster m, LegendsOfValor game) {
 		switch (nextMove) {
 		case "i":
-			checkInfo();
+			showInfo();
 			break;
 		case "c":
 			LegendsItem returnItem = h.getInventory().accessInventory();
@@ -464,12 +458,6 @@ public class Plains extends Place {
 
 	}
 
-	private void checkInfo() {
-		// TODO Auto-generated method stub
-		// Print Hero & Monster info for all heroes/monsters in the tile
-		System.out.println("INFO");
-	}
-
 	private String processUserInput() {
 		while (true) {
 			System.out.println("What would you like to do?");
@@ -553,5 +541,35 @@ public class Plains extends Place {
 			return;
 		}
 		this.statToBoost = statToBoost;
+	}
+
+	@Override
+	public void showInfo() {
+
+		System.out.format("+------------------------+%n");
+		System.out.format("|        HERO INFO       |%n");
+		System.out.format("+------------------------+%n");
+		LegendsOfValor.helperLine(127);
+		System.out.printf(
+				"|                        NAME                        | LEVEL |  HP   |  MANA   |  COINS  |  EXP  |   DEX   | AGILITY | STRENGTH | %n");
+		LegendsOfValor.helperLine(127);
+		for (LegendsHero h : getHeroesOnCell()) {
+			System.out.print(h);
+			LegendsOfValor.helperLine(127);
+		}
+		
+		System.out.println();
+
+		System.out.format("+------------------------+%n");
+		System.out.format("|       MONSTER INFO     |%n");
+		System.out.format("+------------------------+%n");
+		LegendsOfValor.helperLine(105);
+		System.out.printf(
+				"|                        NAME                        | LEVEL |  HP   |  EXP  | DODGE | DEFENSE | STRENGTH | %n");
+		LegendsOfValor.helperLine(105);
+		for (LegendsMonster m : getMonstersOnCell()) {
+			System.out.print(m);
+			LegendsOfValor.helperLine(105);
+		}
 	}
 }

@@ -4,10 +4,12 @@ import java.util.*;
 
 import Entities.LegendsHero;
 import Entities.LegendsPlayer;
+import Items.LegendsArmour;
+import Items.LegendsItem;
+import Items.LegendsWeapon;
 import Map.LegendsMap;
 import Util.Game;
 import Util.State;
-import Util.Token;
 
 import java.io.*;
 
@@ -27,15 +29,15 @@ public abstract class RPG extends Game {
 	public void gameWon() {
 		System.out.println("YOU WON!");
 	}
-	
+
 	public void gameLost() {
 		System.out.println("YOU LOST!");
 	}
-	
+
 	public void gameQuit() {
 		System.out.println("YOU QUIT!");
 	}
-	
+
 	public void playGame() {
 		processUserInput();
 	}
@@ -45,7 +47,7 @@ public abstract class RPG extends Game {
 	}
 
 	public void initPlayers() {
-		player = new LegendsPlayer(1, new Token("\\o/"));
+		player = new LegendsPlayer(1);
 		initObjects();
 		readLines("introduction.txt");
 	}
@@ -74,14 +76,38 @@ public abstract class RPG extends Game {
 
 	}
 
-	public void showInfo() {
-		System.out.println("INFO");
-	}
+	public void checkInventory(LegendsHero h) {
+		LegendsItem item = h.getInventory().accessInventory();
 
-	public void checkInventory() {
-		//TODO implement
-		for (LegendsHero h : player.getTeam()) {
-			h.getInventory().printInventory();
+		if (item instanceof LegendsWeapon) {
+			h.getInventory().replaceEquippedWeapon((LegendsWeapon) item);
+		} else if (item instanceof LegendsArmour) {
+			LegendsArmour castedItem = (LegendsArmour) item;
+			LegendsArmour priorItem = null;
+
+			switch (castedItem.getSlot()) {
+			case "Head":
+				priorItem = h.getInventory().getEquippedArmour().getHeadPiece();
+				h.getInventory().getEquippedArmour().setHeadPiece(castedItem);
+				break;
+			case "Chest":
+				priorItem = h.getInventory().getEquippedArmour().getChestPiece();
+				h.getInventory().getEquippedArmour().setChestPiece(castedItem);
+				break;
+			case "Legs":
+				priorItem = h.getInventory().getEquippedArmour().getLegPiece();
+				h.getInventory().getEquippedArmour().setLegPiece(castedItem);
+				break;
+			case "Feet":
+				priorItem = h.getInventory().getEquippedArmour().getFeetPiece();
+				h.getInventory().getEquippedArmour().setFeetPiece(castedItem);
+				break;
+			}
+
+			if (priorItem != null)
+				h.getInventory().add(priorItem);
+		} else {
+			System.out.println("You cannot use this item here!");
 		}
 	}
 

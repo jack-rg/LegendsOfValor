@@ -11,6 +11,7 @@ import Map.Places.Place;
 import Map.Places.PlayerNexus;
 import Util.Random;
 import Util.State;
+import Util.Token;
 import Util.Creation.EntityGenerator;
 
 public class LegendsOfValor extends RPG {
@@ -18,7 +19,7 @@ public class LegendsOfValor extends RPG {
 	public static int ITEM_IDS;
 
 	public ArrayList<LegendsMonster> monsters;
-	
+
 	private int roundCounter;
 
 	public Iterator<LegendsHero> itr;
@@ -29,8 +30,8 @@ public class LegendsOfValor extends RPG {
 		itr = player.getTeam().iterator();
 		monsters = new ArrayList<LegendsMonster>();
 		generateMonsters(3);
-		for(LegendsMonster m: monsters){
-		System.out.println(m.getName());
+		for (LegendsMonster m : monsters) {
+			System.out.println(m.getName());
 		}
 		spawnEntities();
 	}
@@ -46,7 +47,7 @@ public class LegendsOfValor extends RPG {
 			monsters.get(i).setCurrPlace(monsterSpawnPlace);
 			monsterSpawnPlace.addMonsterOnCell(monsters.get(i));
 			monsters.get(i).setSpawnPlace(monsterSpawnPlace);
-			
+
 			trackCounter += 2;
 		}
 	}
@@ -54,8 +55,11 @@ public class LegendsOfValor extends RPG {
 	public void generateMonsters(int toGenerate) {
 		ArrayList<LegendsMonster> allMonsters = new ArrayList<LegendsMonster>();
 		allMonsters = EntityGenerator.generateMonster(5);
-		for (int i = 0; i < toGenerate; i++)
+		for (int i = 0; i < toGenerate; i++) {
 			monsters.add(allMonsters.remove(Random.randomInt(0, allMonsters.size() - 1)));
+			monsters.get(i).setToken(new Token("VoV"));
+			monsters.get(i).setName(monsters.get(i).getName());
+		}
 	}
 
 	public void printActions(LegendsHero currHero) {
@@ -83,31 +87,29 @@ public class LegendsOfValor extends RPG {
 	}
 
 	public void processUserInput() {
-		for(LegendsMonster m: monsters){
-		System.out.println(m.getName());
+		for (LegendsMonster m : monsters) {
+			System.out.println(m.getName());
 		}
 
 		this.roundCounter++;
-		
-		if (roundCounter % (3*10) == 0)
-			spawnNewMonsters();
-		if (roundCounter % (3*15) == 0)
-			respawnHeroes();
-		
 
-		
+		if (roundCounter % (3 * 10) == 0)
+			spawnNewMonsters();
+		if (roundCounter % (3 * 15) == 0)
+			respawnHeroes();
+
 		LegendsHero currHero = itr.next();
 		int currRowID = currHero.getCurrPlace().getRowID();
 		int currColID = currHero.getCurrPlace().getColID();
 
 		if (currHero.getEntityStats().getCurrHP() <= 0)
 			return;
-		
+
 		boolean cont = true;
 		while (cont) {
 			System.out.println();
 			map.print();
-			//System.out.println(currRowID + " " + currColID);
+			// System.out.println(currRowID + " " + currColID);
 			System.out.println("What would you like to do with " + currHero.getName() + "?");
 			printActions(currHero);
 			String input = in.nextLine();
@@ -154,12 +156,10 @@ public class LegendsOfValor extends RPG {
 			case "e":
 				if (currHero.getCurrPlace() instanceof Nexus) {
 					currHero.getCurrPlace().activatePlace(currHero, this);
-					cont = false;
 				}
 				break;
 			case "c":
-				checkInventory();
-				cont = false;
+				checkInventory(currHero);
 				break;
 			case "q":
 				quit();
@@ -184,6 +184,34 @@ public class LegendsOfValor extends RPG {
 		}
 	}
 
+	private void showInfo() {
+		System.out.format("+------------------------+%n");
+		System.out.format("|        HERO INFO       |%n");
+		System.out.format("+------------------------+%n");
+		helperLine(127);
+		System.out.printf(
+				"|                        NAME                        | LEVEL |  HP   |  MANA   |  COINS  |  EXP  |   DEX   | AGILITY | STRENGTH | %n");
+		helperLine(127);
+		for (LegendsHero h : player.getTeam().getHeroes()) {
+			System.out.print(h);
+			helperLine(127);
+		}
+
+		System.out.println();
+
+		System.out.format("+------------------------+%n");
+		System.out.format("|       MONSTER INFO     |%n");
+		System.out.format("+------------------------+%n");
+		helperLine(105);
+		System.out.printf(
+				"|                        NAME                        | LEVEL |  HP   |  EXP  | DODGE | DEFENSE | STRENGTH | %n");
+		helperLine(105);
+		for (LegendsMonster m : monsters) {
+			System.out.print(m);
+			helperLine(105);
+		}
+	}
+
 	private void respawnHeroes() {
 		for (LegendsHero h : player.getTeam().getHeroes()) {
 			if (h.getEntityStats().getCurrHP() <= 0) {
@@ -196,7 +224,7 @@ public class LegendsOfValor extends RPG {
 		int priorSize = monsters.size();
 		this.generateMonsters(3);
 		int trackCounter = 0;
-		for (int i = priorSize; i < 3+priorSize; i++) {
+		for (int i = priorSize; i < 3 + priorSize; i++) {
 			Place monsterSpawnPlace = map.getPlace(trackCounter, 0, 0);
 			monsters.get(i).setCurrPlace(monsterSpawnPlace);
 			monsters.get(i).setSpawnPlace(monsterSpawnPlace);
@@ -227,11 +255,20 @@ public class LegendsOfValor extends RPG {
 			if (monsters.get(i).getEntityStats().getCurrHP() <= 0) {
 				monsters.get(i).getCurrPlace().removeMonsterOnCell(monsters.get(i));
 				monsters.remove(i);
-				
+
 				i--;
 			} else if (monsters.get(i).getCurrPlace() instanceof PlayerNexus) {
 				this.setStatus(State.LOSE);
 			}
 		}
+	}
+
+	public static void helperLine(int amount) {
+		System.out.print("+");
+		for (int i = 0; i < amount; i++) {
+			System.out.print("-");
+		}
+		System.out.println("+");
+
 	}
 }

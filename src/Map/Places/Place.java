@@ -51,6 +51,8 @@ public abstract class Place extends Cell {
 	}
 	
 	public abstract void activatePlace(LegendsEntity e, LegendsOfValor game);
+	
+	public abstract void showInfo();
 
 	public boolean isAccessible() {
 		return accessiblity;

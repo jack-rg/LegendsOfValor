@@ -8,7 +8,6 @@ import Map.Tracks.Track;
 public abstract class Map {
 	public Track[] map;
 	public int numTracks;
-	public Token teamToken;
 	public int mapDimen;
 	public int totalCells;
 
@@ -16,7 +15,6 @@ public abstract class Map {
 		this.mapDimen = length;
 		this.numTracks = numTracks;
 		totalCells = mapDimen * mapDimen;
-		this.teamToken = new Token("\\o/");
 		initBoard();
 	}
 

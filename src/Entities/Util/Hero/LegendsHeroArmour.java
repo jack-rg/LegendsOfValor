@@ -31,7 +31,7 @@ public class LegendsHeroArmour {
 
 		double chestMultiplier = 0.0;
 		if (this.getChestPiece() != null)
-			chestMultiplier = this.getChestPiece() .getDefenseMultiplier();
+			chestMultiplier = this.getChestPiece().getDefenseMultiplier();
 
 		double legMultiplier = 0.0;
 		if (this.getLegPiece() != null)
@@ -43,7 +43,7 @@ public class LegendsHeroArmour {
 
 		return (headMultiplier + chestMultiplier + legMultiplier + feetMultiplier) / 4.0;
 	}
-	
+
 	/*
 	 * This take damage method is special, since the equipped armour takes damage as
 	 * a while, but the damage is split between each in regards to a specific
@@ -172,4 +172,33 @@ public class LegendsHeroArmour {
 
 		this.feetPiece = newPiece;
 	}
+
+	public String toString() {
+
+		String ret = "Armor Includes: \n";
+		if (getHeadPiece() != null) {
+			ret += "   Helment: " + getHeadPiece().getName() + " with Defense Boost "
+					+ getHeadPiece().getDefenseMultiplier() + " and durability " + getHeadPiece().getCurrentDurability()
+					+ "/" + getHeadPiece().getMaxDurability();
+		}
+		if (getChestPiece() != null) {
+			ret += "\n   Chestplate: " + getChestPiece().getName() + " with Defense Boost "
+					+ getChestPiece().getDefenseMultiplier() + " and durability "
+					+ getChestPiece().getCurrentDurability() + "/" + getChestPiece().getMaxDurability();
+		}
+		if (getLegPiece() != null) {
+			ret += "\n   Leggings: " + getLegPiece().getName() + " with Defense Boost "
+					+ getLegPiece().getDefenseMultiplier() + " and durability " + getLegPiece().getCurrentDurability()
+					+ "/" + getLegPiece().getMaxDurability();
+
+		}
+		if (getFeetPiece() != null) {
+			ret += "\n   Boots: " + getFeetPiece().getName() + " with Defense Boost "
+					+ getFeetPiece().getDefenseMultiplier() + " and durability " + getFeetPiece().getCurrentDurability()
+					+ "/" + getFeetPiece().getMaxDurability();
+		}
+		return ret;
+
+	}
+
 }

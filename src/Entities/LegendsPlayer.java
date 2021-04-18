@@ -4,22 +4,18 @@ import java.util.Scanner;
 
 import Entities.Util.Player.LegendsPlayerHeroTeam;
 import Util.Player;
-import Util.Token;
 
 public class LegendsPlayer extends Player {
 	public static Scanner in = new Scanner(System.in);
 	private LegendsPlayerHeroTeam team;
-	private Token token;
 
-	public LegendsPlayer(int ID, Token token) {
+	public LegendsPlayer(int ID) {
 		super(ID);
-		this.setToken(token);
 		team = new LegendsPlayerHeroTeam();
 	}
 	
-	public LegendsPlayer(int ID, String name, Token token) {
+	public LegendsPlayer(int ID, String name) {
 		super(ID, name);
-		this.setToken(token);
 		team = new LegendsPlayerHeroTeam();
 	}
 
@@ -47,14 +43,6 @@ public class LegendsPlayer extends Player {
 			System.out.format("%3d: " + h.getName() + "%n", i);
 			i++;
 		}
-	}
-
-	public Token getToken() {
-		return token;
-	}
-
-	public void setToken(Token token) {
-		this.token = token;
 	}
 	
 	public LegendsPlayerHeroTeam getTeam() {
