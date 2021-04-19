@@ -8,21 +8,23 @@
 /*    - Victor Vicente                                 */
 /*=====================================================*/
 
-package Map.Places;
+package Map.Places.Market;
 
 import Entities.LegendsEntity;
+import Entities.LegendsHero;
 import Game.LegendsOfValor;
+import Util.Printer;
 import Util.Token;
 import Util.Abstraction.Track;
 
-public class Nature extends Place {
+public class MonsterNexus extends Nexus {
 
 	/* =================== */
 	/* Constructor Methods */
 	/* =================== */
 
-	public Nature(Track track, int row, int col, Token natureToken) {
-		super(track, row, col, false, natureToken);
+	public MonsterNexus(Track track, int row, int col, Token nexusType) {
+		super(track, row, col, nexusType);
 	}
 
 	/* ============ */
@@ -30,16 +32,12 @@ public class Nature extends Place {
 	/* ============ */
 
 	/*
-	 * Both of the following methods are inherited from Place, however, they are not
-	 * actually needed for Nature places, since they cannot be accessed.
+	 * Overrider method to make sure that Heroes don't activate Monster Nexus
+	 * Markets, and that the reaching of the enemy spawn point is properly marked
 	 */
-	public void activatePlace(LegendsEntity e, LegendsOfValor game) {
-		return;
-	}
-
 	@Override
-	public void showInfo() {
-		return;
+	public void activatePlace(LegendsEntity h, LegendsOfValor game) {
+		if (h instanceof LegendsHero)
+			Printer.printMSG("You have reached an Enemy Nexus!");
 	}
-
 }

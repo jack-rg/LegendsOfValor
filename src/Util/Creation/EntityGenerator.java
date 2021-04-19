@@ -1,3 +1,13 @@
+/*=====================================================*/
+/* Project Title: Legends Of Valor                     */
+/* Course Name: GRS CS611                              */
+/* Semester: Spring '21                                */
+/* Project Authors:                                    */
+/*    - Jack Giunta                                    */
+/*    - Victoria-Rose Burke                            */
+/*    - Victor Vicente                                 */
+/*=====================================================*/
+
 package Util.Creation;
 
 import java.util.ArrayList;
@@ -13,6 +23,7 @@ import Entities.Classes.Instances.Warrior;
 import Entities.Util.Hero.LegendsHeroStats;
 import Entities.Util.Monster.LegendsMonsterStats;
 import Game.LegendsOfValor;
+import Util.Printer;
 import Util.Random;
 
 public class EntityGenerator {
@@ -125,8 +136,7 @@ public class EntityGenerator {
 	 * in regards to level.
 	 */
 	private static LegendsHeroStats getHeroStats(LegendsHeroClass classType) {
-		int level = 100;
-				//Random.randomInt(1, 20);
+		int level = Random.randomInt(1, 20);
 
 		int maxHP = 100 * level;
 		int maxMana = (int) Math.round(100 * (Math.pow(1.1, level)));
@@ -153,15 +163,12 @@ public class EntityGenerator {
 
 		while (cont) {
 			contTwo = true;
-			System.out.println();
-			System.out.println("Please enter the name for your Hero:");
+			Printer.printMSG("Please enter the name for your Hero:");
 
 			answer = input.nextLine();
 
 			while (contTwo) {
-				System.out.println();
-				System.out.println("Entered name: " + answer);
-				System.out.println("Are you happy with this name? (Y/N)");
+				Printer.printMSG("Entered name: " + answer + "\n" + "Are you happy with this name? (Y/N)");
 
 				yN = input.nextLine();
 
@@ -173,11 +180,11 @@ public class EntityGenerator {
 					break;
 				case "N":
 				case "n":
-					System.out.println("Prompting for name again...");
+					Printer.printMSG("Prompting for name again...");
 					contTwo = false;
 					break;
 				default:
-					System.out.println("Invalid Input!! Only inputs allowed are: 'Y'/'y'/'N'/'n'");
+					Printer.printSetMessage("invalidResponse");
 					break;
 				}
 			}
@@ -195,8 +202,7 @@ public class EntityGenerator {
 		String answer = "";
 
 		while (true) {
-			System.out.println();
-			System.out.println("Please enter the Class for your Hero: ('Paladin'/'Sorcerer'/'Warrior')");
+			Printer.printMSG("Please enter the Class for your Hero: ('Paladin'/'Sorcerer'/'Warrior')");
 
 			answer = input.nextLine();
 
@@ -207,8 +213,7 @@ public class EntityGenerator {
 			else if (answer.equals("Warrior"))
 				return new Warrior();
 			else
-				System.out.println("Invalid input, trying again!");
-
+				Printer.printSetMessage("invalidResponse");
 		}
 	}
 }

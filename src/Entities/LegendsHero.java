@@ -1,3 +1,13 @@
+/*=====================================================*/
+/* Project Title: Legends Of Valor                     */
+/* Course Name: GRS CS611                              */
+/* Semester: Spring '21                                */
+/* Project Authors:                                    */
+/*    - Jack Guinta                                    */
+/*    - Victoria-Rose Burke                            */
+/*    - Victor Vicente                                 */
+/*=====================================================*/
+
 package Entities;
 
 import java.util.Scanner;
@@ -11,12 +21,17 @@ import Game.LegendsOfValor;
 import Map.Places.Place;
 import Map.Places.Plains.Plains;
 import Map.Tracks.Lane;
+import Util.Printer;
 
 public class LegendsHero extends LegendsEntity {
 
 	private LegendsHeroInventory inventory;
 	private LegendsHeroStats stats;
 	private LegendsHeroClass heroClass;
+
+	/* =================== */
+	/* Constructor Methods */
+	/* =================== */
 
 	public LegendsHero(int ID, String name, LegendsHeroStats stats, LegendsHeroClass heroClass) {
 		super(ID, name);
@@ -25,14 +40,27 @@ public class LegendsHero extends LegendsEntity {
 		this.heroClass = heroClass;
 	}
 
+	/* ============ */
+	/* Game Methods */
+	/* ============ */
+
+	@Override
 	public void levelUp() {
 		this.stats.levelUp(this.heroClass);
 
 		this.inventory.gainMoney(100);
 
-		System.out.println(this.getName() + " has leveled up to level " + this.stats.getLevel() + "!");
+		Printer.printMSG(this.getName() + " has leveled up to level " + this.stats.getLevel() + "!");
 	}
 
+	/*
+	 * This method is used to update the position of the Hero, it checks whether it
+	 * is moving into a row that is accessible, and isn't occupied by any Monster.
+	 * The complication of the method arises from checking the cell to the side of
+	 * the cell the Hero is moving to, to make sure it's a legal move. If by chance
+	 * the cell to the side of the cell where the Hero is moving to has a Monster,
+	 * he is teleported there to combat the Monster.
+	 */
 	@Override
 	public void updatePosition(int x, int y, LegendsOfValor game) {
 		int z = 0;
@@ -44,51 +72,61 @@ public class LegendsHero extends LegendsEntity {
 
 		if (toMoveTo != null && toMoveTo.isAccessible()) {
 			if ((toMoveTo.getMonstersOnCell().size() > 0) && (toMoveTo instanceof Plains)) {
-				// Do Stuff
 				this.getCurrPlace().removeHeroOnCell(this);
 				this.setCurrPlace(toMoveTo);
 				this.getCurrPlace().addHeroOnCell(this);
 				this.getCurrPlace().activatePlace(this, game);
 			} else if ((sideCell.getMonstersOnCell().size() > 0) && (sideCell instanceof Plains)) {
-				// Do Stuff
 				this.getCurrPlace().removeHeroOnCell(this);
 				this.setCurrPlace(sideCell);
 				this.getCurrPlace().addHeroOnCell(this);
 				this.getCurrPlace().activatePlace(this, game);
 			} else if ((toMoveTo.getMonstersOnCell().size() == 0) && (sideCell.getMonstersOnCell().size() == 0)) {
-				// Do Stuff
 				this.getCurrPlace().removeHeroOnCell(this);
 				this.setCurrPlace(toMoveTo);
 				this.getCurrPlace().addHeroOnCell(this);
 				this.getCurrPlace().activatePlace(this, game);
 			} else {
-				System.out.println("You can't reach this location! Try moving elsewhere.");
+				Printer.printSetMessage("invalidMove");
 			}
 		} else {
-			System.out.println("You can't reach this location! Try moving elsewhere.");
+			Printer.printSetMessage("invalidMove");
 		}
 	}
 
+	/*
+	 * Used to reset the Hero position back to their Spawning Spot. In case the hero
+	 * is still alive, it removes them from the current cell (back command), if they
+	 * are dead it doesn't since they don't have a current cell (respawn).
+	 */
 	@Override
 	public void resetPosition() {
-		this.getCurrPlace().removeHeroOnCell(this);
+		if (this.getEntityStats().getCurrHP() > 0)
+			this.getCurrPlace().removeHeroOnCell(this);
+
 		this.setCurrPlace(this.getSpawnPlace());
 		this.getCurrPlace().addHeroOnCell(this);
 	}
 
 	@Override
 	public void respawn() {
-		this.setCurrPlace(this.getSpawnPlace());
+		this.resetPosition();
+
 		this.stats.regenHealth(1);
 		this.stats.regenMana(1);
-		this.getCurrPlace().addHeroOnCell(this);
 	}
 
-	@Override
-	public LegendsEntityClass getEntityClass() {
-		return this.heroClass;
-	}
-
+	/*
+	 * Overall Teleport method. It starts by getting the Teleport Coordinates, and
+	 * then proceeds to make several checks. Firstly, Heroes are only allowed to TP
+	 * to "Plains" cells inside "Lane" tracks. This means a Hero can't teleport to
+	 * an inaccessible cell, nor to a Nexus.
+	 * 
+	 * Then it runs a check to see what is the first row that has a monster, and
+	 * makes sure the Hero isn't teleporting behind them. If they teleport to the
+	 * cell, or to the cell besides it, they'll be put into the cell with the
+	 * Monster, and engage.
+	 */
 	public void teleport(LegendsOfValor game) {
 
 		int[] coords = this.tpCoord(game);
@@ -108,7 +146,7 @@ public class LegendsHero extends LegendsEntity {
 			}
 			System.out.println(minRow);
 			if (minRow > coords[1]) {
-				System.out.println("You can't reach this location! Try moving elsewhere.");
+				Printer.printSetMessage("invalidMove");
 			} else if (minRow == coords[1]) {
 				if ((rawPlaces[minRow][0].getMonstersOnCell().size() > 0)) {
 					this.getCurrPlace().removeHeroOnCell(this);
@@ -121,7 +159,7 @@ public class LegendsHero extends LegendsEntity {
 					this.getCurrPlace().addHeroOnCell(this);
 					this.getCurrPlace().activatePlace(this, game);
 				} else {
-					System.out.println("You can't reach this location! Try moving elsewhere.");
+					Printer.printSetMessage("invalidMove");
 				}
 			} else {
 				this.getCurrPlace().removeHeroOnCell(this);
@@ -130,11 +168,17 @@ public class LegendsHero extends LegendsEntity {
 				this.getCurrPlace().activatePlace(this, game);
 			}
 		} else {
-			System.out.println("You can't reach this location! Try moving elsewhere.");
+			Printer.printSetMessage("invalidMove");
 		}
 
 	}
 
+	/*
+	 * This method prompts for user input for lane/row/col to TP to. It then passes
+	 * this information as an array of integers back to the main Teleport Method.
+	 * 
+	 * It also allows the user to exit the teleport at any moment.
+	 */
 	private int[] tpCoord(LegendsOfValor game) {
 		@SuppressWarnings("resource")
 		Scanner in = new Scanner(System.in);
@@ -146,7 +190,7 @@ public class LegendsHero extends LegendsEntity {
 
 		boolean contOne = true;
 		while (contOne) {
-			System.out.println("Please enter the Lane you'd like to teleport to? ['Top'/'Mid'/'Bot'/'Leave']");
+			Printer.printMSG("Please enter the Lane you'd like to teleport to? ['Top'/'Mid'/'Bot'/'Leave']");
 			laneResponse = in.nextLine();
 
 			switch (laneResponse) {
@@ -160,7 +204,7 @@ public class LegendsHero extends LegendsEntity {
 				leave = true;
 				break;
 			default:
-				System.out.println("Invalid response! Trying again!");
+				Printer.printSetMessage("invalidResponse");
 			}
 		}
 		int numLane = 0;
@@ -174,7 +218,7 @@ public class LegendsHero extends LegendsEntity {
 
 		boolean contTwo = true;
 		while (contTwo) {
-			System.out.println("Please enter the Row # you'd like to teleport to? [Or -1 to leave]");
+			Printer.printMSG("Please enter the Row # you'd like to teleport to? [Or -1 to leave]");
 
 			laneRow = in.nextInt();
 
@@ -184,7 +228,7 @@ public class LegendsHero extends LegendsEntity {
 			} else if (laneRow >= 0 && laneRow < game.getMap().getMapDimen()) {
 				contTwo = false;
 			} else
-				System.out.println("Invalid input! Trying again!");
+				Printer.printSetMessage("invalidResponse");
 		}
 
 		if (leave)
@@ -192,19 +236,19 @@ public class LegendsHero extends LegendsEntity {
 
 		boolean contThree = true;
 		while (contThree) {
-			System.out.println("Please enter the Col # you'd like to teleport to? [Or -1 to leave]");
+			Printer.printMSG("Please enter the Col # you'd like to teleport to? [Or -1 to leave]");
 
 			laneCol = in.nextInt();
 
 			if (laneCol == -1) {
 				leave = true;
 				contThree = false;
-			} else if ((game.getMap().getRawTracks()[numLane] instanceof Lane) && (laneCol >= 0 && laneCol < 2)) {
+			} else if ((game.getMap().getMap()[numLane] instanceof Lane) && (laneCol >= 0 && laneCol < 2)) {
 				contThree = false;
-			} else if ((game.getMap().getRawTracks()[numLane] instanceof Lane) && (laneCol >= 0 && laneCol < 1)) {
+			} else if ((game.getMap().getMap()[numLane] instanceof Lane) && (laneCol >= 0 && laneCol < 1)) {
 				contThree = false;
 			} else
-				System.out.println("Invalid input! Trying again!");
+				Printer.printSetMessage("invalidResponse");
 		}
 
 		if (leave)
@@ -212,11 +256,20 @@ public class LegendsHero extends LegendsEntity {
 
 		return new int[] { numLane, laneRow, laneCol };
 	}
+	
+	/* ===================== */
+	/* Getter/Setter Methods */
+	/* ===================== */
+
+	@Override
+	public LegendsEntityClass getEntityClass() {
+		return this.heroClass;
+	}
 
 	@Override
 	public void setEntityClass(LegendsEntityClass eClass) {
 		if (!(eClass instanceof LegendsHeroClass)) {
-			System.out.println("Invalid Entity Class Type!");
+			Printer.printSetMessage("invalidClass");
 			return;
 		}
 
@@ -231,7 +284,7 @@ public class LegendsHero extends LegendsEntity {
 	@Override
 	public void setLegendsEntityStats(LegendsEntityStats eStats) {
 		if (!(eStats instanceof LegendsHeroStats)) {
-			System.out.println("Invalid Entity Stats Type!");
+			Printer.printSetMessage("invalidStats");
 			return;
 		}
 
@@ -245,6 +298,10 @@ public class LegendsHero extends LegendsEntity {
 	public void setInventory(LegendsHeroInventory inventory) {
 		this.inventory = inventory;
 	}
+	
+	/* =========== */
+	/* Aux Methods */
+	/* =========== */
 
 	public String toString() {
 		return String.format("| %-50s | %-5d | %-5d | %-7d | %-7d | %-5d | %-7d | %-7d | %-7d  | %n", getName(),

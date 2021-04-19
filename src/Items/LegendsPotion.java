@@ -1,3 +1,13 @@
+/*=====================================================*/
+/* Project Title: Legends Of Valor                     */
+/* Course Name: GRS CS611                              */
+/* Semester: Spring '21                                */
+/* Project Authors:                                    */
+/*    - Jack Giunta                                    */
+/*    - Victoria-Rose Burke                            */
+/*    - Victor Vicente                                 */
+/*=====================================================*/
+
 package Items;
 
 import java.util.ArrayList;
@@ -14,12 +24,14 @@ public class LegendsPotion extends LegendsItem {
 	public static final double ABSOLUTE_MAX_MULTIPLIER = 10;
 
 	private boolean isBuff;
-
 	private String targetAbility;
-
 	private double multiplier;
 
 	private boolean used;
+
+	/* =================== */
+	/* Constructor Methods */
+	/* =================== */
 
 	public LegendsPotion(int ID, String name, int cost, int minLevel, boolean isBuff, String targetAbility,
 			double multiplier) {
@@ -29,6 +41,10 @@ public class LegendsPotion extends LegendsItem {
 		this.setTargetAbility(targetAbility);
 		this.setMultiplier(multiplier);
 	}
+
+	/* ===================== */
+	/* Getter/Setter Methods */
+	/* ===================== */
 
 	public boolean isUsed() {
 		return used;

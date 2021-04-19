@@ -1,13 +1,28 @@
+/*=====================================================*/
+/* Project Title: Legends Of Valor                     */
+/* Course Name: GRS CS611                              */
+/* Semester: Spring '21                                */
+/* Project Authors:                                    */
+/*    - Jack Giunta                                    */
+/*    - Victoria-Rose Burke                            */
+/*    - Victor Vicente                                 */
+/*=====================================================*/
+
 package Map.Tracks;
 
 import Map.Places.Nature;
 import Map.Places.Place;
 import Util.Token;
+import Util.Abstraction.Track;
 
-//A path track filled with inaccessible areas
 public class Boundary extends Track {
+	
 	private Place[] places;
 
+	/* =================== */
+	/* Constructor Methods */
+	/* =================== */
+	
 	public Boundary(int boundID, int length) {
 		super(boundID);
 		places = new Place[length];
@@ -15,13 +30,13 @@ public class Boundary extends Track {
 			places[i] = new Nature(this, i, 0, new Token("XXX"));
 		}
 	}
-
+	
+	/* ===================== */
+	/* Getter/Setter Methods */
+	/* ===================== */
+	
 	public Place getPlace(int row, int col) {
 		return places[row];
-	}
-
-	public void printTrack() {
-		System.out.println("insert print pls");
 	}
 
 }

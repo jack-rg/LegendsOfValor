@@ -1,8 +1,19 @@
+/*=====================================================*/
+/* Project Title: Legends Of Valor                     */
+/* Course Name: GRS CS611                              */
+/* Semester: Spring '21                                */
+/* Project Authors:                                    */
+/*    - Jack Giunta                                    */
+/*    - Victoria-Rose Burke                            */
+/*    - Victor Vicente                                 */
+/*=====================================================*/
+
 package Entities.Util.Hero;
 
 import Entities.Classes.LegendsEntityClass;
 import Entities.Classes.LegendsHeroClass;
 import Entities.Util.LegendsEntityStats;
+import Util.Printer;
 
 public class LegendsHeroStats extends LegendsEntityStats {
 
@@ -13,6 +24,10 @@ public class LegendsHeroStats extends LegendsEntityStats {
 	private int mana;
 	private int maxMana;
 
+	/* =================== */
+	/* Constructor Methods */
+	/* =================== */
+
 	public LegendsHeroStats(int exp, int level, int maxHP, int maxMana, int dexterity, int strength, int agility) {
 		super(exp, level, maxHP);
 		this.mana = maxMana;
@@ -22,6 +37,14 @@ public class LegendsHeroStats extends LegendsEntityStats {
 		this.agility = agility;
 	}
 
+	/* ============ */
+	/* Game Methods */
+	/* ============ */
+
+	/*
+	 * Levels up the hero, increasing their stats as needed.
+	 */
+	@Override
 	public void levelUp(LegendsEntityClass eClass) {
 		LegendsHeroClass classType = (LegendsHeroClass) eClass;
 
@@ -34,6 +57,29 @@ public class LegendsHeroStats extends LegendsEntityStats {
 		this.dexterity = (int) Math.round(this.dexterity * classType.getDexterityBoost() + 1.05);
 		this.agility = (int) Math.round(this.agility * classType.getAgilityBoost() + 1.05);
 	}
+
+	/*
+	 * Applies a specific buff and multiplier
+	 */
+	public void applyBuff(String targetAbility, double multiplier) {
+		switch (targetAbility) {
+		case "Strength":
+			this.strength = (int) Math.round(this.strength * (1 + multiplier));
+			break;
+		case "Dexterity":
+			this.dexterity = (int) Math.round(this.dexterity * (1 + multiplier));
+			break;
+		case "Agility":
+			this.agility = (int) Math.round(this.agility * (1 + multiplier));
+			break;
+		default:
+			Printer.printSetMessage("invalidAbility");
+		}
+	}
+
+	/* ===================== */
+	/* Getter/Setter Methods */
+	/* ===================== */
 
 	public void increaseMaxMana(int toIncrease) {
 		this.maxMana += toIncrease;
@@ -80,26 +126,15 @@ public class LegendsHeroStats extends LegendsEntityStats {
 		this.strength = 0;
 	}
 
-	public void applyBuff(String targetAbility, double multiplier) {
-		switch (targetAbility) {
-		case "Strength":
-			this.strength = (int) Math.round(this.strength * (1 + multiplier));
-			break;
-		case "Dexterity":
-			this.dexterity = (int) Math.round(this.dexterity * (1 + multiplier));
-			break;
-		case "Agility":
-			this.agility = (int) Math.round(this.agility * (1 + multiplier));
-			break;
-		default:
-			System.out.println("ERROR!!");
-		}
-	}
+	/* =========== */
+	/* Aux Methods */
+	/* =========== */
 
 	public String toString() {
 		return "Current EXP: " + this.getEXP() + " | Current Level: " + this.getLevel() + " | HP: " + this.getCurrHP()
 				+ "/" + this.getMaxHP() + " | Mana: " + this.getCurrMana() + "/" + this.getMaxMana() + " \n"
-				+ "Dexterity: " + this.getDexterity() + " | Strength: " + this.getStrength() + " | Agility: " + this.getAgility();
+				+ "Dexterity: " + this.getDexterity() + " | Strength: " + this.getStrength() + " | Agility: "
+				+ this.getAgility();
 	}
 
 }

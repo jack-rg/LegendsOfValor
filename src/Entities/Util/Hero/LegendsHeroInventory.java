@@ -1,3 +1,13 @@
+/*=====================================================*/
+/* Project Title: Legends Of Valor                     */
+/* Course Name: GRS CS611                              */
+/* Semester: Spring '21                                */
+/* Project Authors:                                    */
+/*    - Jack Giunta                                    */
+/*    - Victoria-Rose Burke                            */
+/*    - Victor Vicente                                 */
+/*=====================================================*/
+
 package Entities.Util.Hero;
 
 import java.util.ArrayList;
@@ -7,7 +17,8 @@ import Items.LegendsArmour;
 import Items.LegendsItem;
 import Items.LegendsSpell;
 import Items.LegendsWeapon;
-import Util.Inventory;
+import Util.Printer;
+import Util.Abstraction.Inventory;
 
 public class LegendsHeroInventory extends Inventory {
 
@@ -20,15 +31,97 @@ public class LegendsHeroInventory extends Inventory {
 
 	private ArrayList<LegendsItem> items;
 
+	/* =================== */
+	/* Constructor Methods */
+	/* =================== */
+	
 	public LegendsHeroInventory() {
 		this.equippedArmour = null;
 		this.equippedArmour = new LegendsHeroArmour();
 
 		this.knownSpells = new ArrayList<LegendsSpell>();
 
-		this.balance = 100000;
+		this.balance = 250;
 
 	}
+	
+	/* ============ */
+	/* Game Methods */
+	/* ============ */
+	
+	public LegendsItem accessInventory() {
+		@SuppressWarnings("resource")
+		Scanner scanner = new Scanner(System.in);
+		int choice = 0;
+		
+		while (true) {
+			Printer.printMSG("What would you like to do?" + "\n" + "[1] View Inventory" + "\n" + "[2] Use Item" + "\n" + "[3] Exit");
+			
+			choice = scanner.nextInt();
+			
+			System.out.println();
+			
+			switch(choice) {
+			case 1:
+				printHeroInventory();
+				break;
+			case 2:
+				return this.useItem();
+			case 3:
+				return null;
+			default:
+				Printer.printSetMessage("invalidResponse");
+			}
+		}
+		
+	}
+	
+	private LegendsItem useItem() {
+		@SuppressWarnings("resource")
+		Scanner scanner = new Scanner(System.in);
+		int choice = 0;
+		
+		while (true) {
+			Printer.printMSG("Please pick one of the following items:");
+			
+			this.printGeneralItems();
+			choice = scanner.nextInt();
+			
+			if (choice >= 0 && choice < this.size()) {
+				return this.remove(choice);
+			}
+			
+			Printer.printSetMessage("invalidResponse");
+		}
+	}
+	
+	public LegendsSpell pickSpell() {
+		if (this.knownSpells.size() == 0) {
+			Printer.printMSG("You have not yet gained knowledge of any spells!");
+			return null;
+		}
+		
+		@SuppressWarnings("resource")
+		Scanner scanner = new Scanner(System.in);
+		int choice = 0;
+		
+		while (true) {
+			Printer.printMSG("Please pick one of the following spells:");
+			
+			this.printKnownSpells();;
+			choice = scanner.nextInt();
+			
+			if (choice >= 0 && choice < this.knownSpells.size()) {
+				return this.knownSpells.get(choice);
+			}
+
+			Printer.printSetMessage("invalidResponse");
+		}
+	}
+	
+	/* ===================== */
+	/* Getter/Setter Methods */
+	/* ===================== */
 	
 	public void learnSpell(LegendsSpell spell) {
 		this.knownSpells.add(spell);
@@ -91,82 +184,14 @@ public class LegendsHeroInventory extends Inventory {
 			
 			this.equippedArmour.setFeetPiece(armour);
 		} else {
-			System.out.println("Invalid armour slot! Cannot Equip!");
+			Printer.printSetMessage("invalidArmourType");;
 		}
 		
 	}
 	
-	public LegendsItem accessInventory() {
-		@SuppressWarnings("resource")
-		Scanner scanner = new Scanner(System.in);
-		int choice = 0;
-		
-		while (true) {
-			System.out.println("What would you like to do?");
-			System.out.println("[1] View Inventory");
-			System.out.println("[2] Use Item");
-			System.out.println("[3] Exit");
-			
-			choice = scanner.nextInt();
-			
-			switch(choice) {
-			case 1:
-				printHeroInventory();
-				break;
-			case 2:
-				return this.useItem();
-			case 3:
-				return null;
-			default:
-				System.out.println("Invalid input! Trying again!");
-			}
-		}
-	}
-	
-	public LegendsItem useItem() {
-		@SuppressWarnings("resource")
-		Scanner scanner = new Scanner(System.in);
-		int choice = 0;
-		
-		while (true) {
-			System.out.println("Please pick an item!");
-			System.out.println();
-			
-			this.printGeneralItems();
-			choice = scanner.nextInt();
-			
-			if (choice >= 0 && choice < this.size()) {
-				return this.remove(choice);
-			}
-			
-			System.out.println("Invalid selection! Trying again!");
-		}
-	}
-	
-	public LegendsSpell pickSpell() {
-		if (this.knownSpells.size() == 0) {
-			System.out.println("You know no spells!");
-			return null;
-		}
-		
-		@SuppressWarnings("resource")
-		Scanner scanner = new Scanner(System.in);
-		int choice = 0;
-		
-		while (true) {
-			System.out.println("Please pick a spell!");
-			System.out.println();
-			
-			this.printKnownSpells();;
-			choice = scanner.nextInt();
-			
-			if (choice >= 0 && choice < this.knownSpells.size()) {
-				return this.knownSpells.get(choice);
-			}
-			
-			System.out.println("Invalid selection! Trying again!");
-		}
-	}
+	/* =========== */
+	/* Aux Methods */
+	/* =========== */
 
 	public void printHeroInventory() {
 		System.out.format("+------------------------+%n");

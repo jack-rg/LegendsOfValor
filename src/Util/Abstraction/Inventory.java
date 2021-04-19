@@ -1,4 +1,14 @@
-package Util;
+/*=====================================================*/
+/* Project Title: Legends Of Valor                     */
+/* Course Name: GRS CS611                              */
+/* Semester: Spring '21                                */
+/* Project Authors:                                    */
+/*    - Jack Giunta                                    */
+/*    - Victoria-Rose Burke                            */
+/*    - Victor Vicente                                 */
+/*=====================================================*/
+
+package Util.Abstraction;
 
 import java.util.*;
 
@@ -11,7 +21,11 @@ import Util.Creation.ItemGenerator;
 
 public class Inventory {
 
-	public ArrayList<LegendsItem> inventory;
+	private ArrayList<LegendsItem> inventory;
+
+	/* =================== */
+	/* Constructor Methods */
+	/* =================== */
 
 	public Inventory() {
 		inventory = new ArrayList<LegendsItem>();
@@ -21,23 +35,44 @@ public class Inventory {
 		inventory = ItemGenerator.generateItems(numToGenerate);
 	}
 
-	public String concatLine(int numSpaces, String toPrint) {
-		String ret = "";
-		for (int i = 0; i < numSpaces; i++) {
-			ret += toPrint;
-		}
-		return ret;
+	/* ===================== */
+	/* Getter/Setter Methods */
+	/* ===================== */
+	
+	public ArrayList<LegendsItem> getRawInventory() {
+		return inventory;
 	}
 
-	public void printHelperLine() {
-		System.out.println("+" + concatLine(6, "-") + "+" + concatLine(52, "-") + "+" + concatLine(6, "-") + "+"
-				+ concatLine(5, "-") + "+" + concatLine(12, "-") + "+" + concatLine(9, "-") + "+" + concatLine(8, "-")
-				+ "+" + concatLine(9, "-") + "+" + concatLine(12, "-") + "+" + concatLine(12, "-") + "+"
-				+ concatLine(6, "-") + "+");
-
+	public boolean isEmpty() {
+		return inventory.size() <= 0;
 	}
 
+	public LegendsItem remove(int index) {
+		return this.inventory.remove(index);
+	}
+
+	public void remove(LegendsItem item) {
+		this.inventory.remove(item);
+	}
+
+	public void add(LegendsItem item) {
+		this.inventory.add(item);
+	}
+
+	public int size() {
+		return this.inventory.size();
+	}
+
+	/* =========== */
+	/* Aux Methods */
+	/* =========== */
+
+	/*
+	 * The methods below print the Inventory in a fancy way
+	 */
 	public void printInventory() {
+		System.out.println();
+
 		String weaponsFormat = "| [%-2d] | %-50s | %-4d | %-3d | %-10s | %-6s  |  %-4d  |  %-5b  | %-10s |   %-6s   | %-4s | %n";
 		String armourFormat = "| [%-2d] | %-50s | %-4d | %-3d | %-10s | %.4f  |  %-4s  |  %-5s  | %-10s |   %-6s   | %-4s | %n";
 		String spellFormat = "| [%-2d] | %-50s | %-4d | %-3d | %-10s | %-6s  |  %-4d  |  %-5s  | %-10s |   %2.4f   | %-4d | %n";
@@ -76,30 +111,24 @@ public class Inventory {
 			}
 			printHelperLine();
 		}
+
+		System.out.println();
 	}
 
-	public ArrayList<LegendsItem> getRawInventory() {
-		return inventory;
+	private String concatLine(int numSpaces, String toPrint) {
+		String ret = "";
+		for (int i = 0; i < numSpaces; i++) {
+			ret += toPrint;
+		}
+		return ret;
 	}
-	
-    public boolean isEmpty(){
-        return inventory.size() <= 0;
-    }
 
-    public LegendsItem remove(int index) {
-    	return this.inventory.remove(index);
-    }
-    
-    public void remove(LegendsItem item) {
-    	this.inventory.remove(item);
-    }
-    
-    public void add(LegendsItem item) {
-    	this.inventory.add(item);
-    }
-    
-    public int size() {
-    	return this.inventory.size();
-    }
+	private void printHelperLine() {
+		System.out.println("+" + concatLine(6, "-") + "+" + concatLine(52, "-") + "+" + concatLine(6, "-") + "+"
+				+ concatLine(5, "-") + "+" + concatLine(12, "-") + "+" + concatLine(9, "-") + "+" + concatLine(8, "-")
+				+ "+" + concatLine(9, "-") + "+" + concatLine(12, "-") + "+" + concatLine(12, "-") + "+"
+				+ concatLine(6, "-") + "+");
+
+	}
 
 }

@@ -1,3 +1,13 @@
+/*=====================================================*/
+/* Project Title: Legends Of Valor                     */
+/* Course Name: GRS CS611                              */
+/* Semester: Spring '21                                */
+/* Project Authors:                                    */
+/*    - Jack Giunta                                    */
+/*    - Victoria-Rose Burke                            */
+/*    - Victor Vicente                                 */
+/*=====================================================*/
+
 package Entities.Util.Player;
 
 import java.util.ArrayList;
@@ -5,6 +15,7 @@ import java.util.Iterator;
 import java.util.Scanner;
 
 import Entities.LegendsHero;
+import Util.Printer;
 import Util.Random;
 import Util.Token;
 import Util.Creation.EntityGenerator;
@@ -13,7 +24,7 @@ public class LegendsPlayerHeroTeam implements Iterable<LegendsHero> {
 
 	// Theoretical limits to the amount of Heroes that any one Player can have
 	public static final int ABSOLUTE_MAX_HEROES_PER_PLAYER = 3;
-	public static final int ABSOLUTE_MIN_HEROES_PER_PLAYER = 1;
+	public static final int ABSOLUTE_MIN_HEROES_PER_PLAYER = 3;
 
 	private ArrayList<LegendsHero> heroes;
 
@@ -29,6 +40,10 @@ public class LegendsPlayerHeroTeam implements Iterable<LegendsHero> {
 	/* Game Methods */
 	/* ============ */
 
+	/*
+	 * Creates a Player's Heroes, by either procedurally generating them, or letting
+	 * the Player create them!
+	 */
 	private void createHeroes() {
 		this.resetHeroes();
 
@@ -40,25 +55,25 @@ public class LegendsPlayerHeroTeam implements Iterable<LegendsHero> {
 			if (createOwnHeroes) {
 				hero = EntityGenerator.generateCustomHero();
 			} else {
-				System.out.println();
-				System.out.println("Creating a random hero pool to pick from! Expect some lag!");
+				Printer.printMSG("Creating a random hero pool to pick from! Expect some lag!");
 				ArrayList<LegendsHero> pickableHeroes = EntityGenerator.generateHeroes(2);
 				hero = pickableHeroes.get(Random.randomInt(0, pickableHeroes.size() - 1));
 
-				
 				hero.setToken(new Token("\\o/"));
-				hero.setName(hero.getName());
-				
-				System.out.println();
-				System.out.println("Picked hero: " + hero.getName());
-				System.out.println("Hero Class: " + hero.getEntityClass());
-				System.out.println("Hero Stats: \n" + hero.getEntityStats());
+
+				Printer.printMSG("Picked hero: " + hero.getName() + "\n" + "Hero Class: " + hero.getEntityClass() + "\n"
+						+ "Hero Stats: \n" + hero.getEntityStats());
 			}
 			this.addHero(hero);
 		}
 
 	}
 
+	/*
+	 * This method is unused as of LegendsOfValor, since the Player always plays
+	 * with 3 Heroes, but theoretically, it would allow for the Player to pick how
+	 * many Heroes to use.
+	 */
 	@SuppressWarnings("unused")
 	private int getAmountOfHeroes() {
 		@SuppressWarnings("resource")
@@ -66,15 +81,14 @@ public class LegendsPlayerHeroTeam implements Iterable<LegendsHero> {
 
 		int input = 0;
 		while (true) {
-			System.out.println();
-			System.out.println("Please enter the amount of heroes you'd like to play with?");
+			Printer.printMSG("Please enter the amount of heroes you'd like to play with?");
 
 			input = scanner.nextInt();
 
 			if (input < LegendsPlayerHeroTeam.ABSOLUTE_MIN_HEROES_PER_PLAYER)
-				System.out.println("Value provided too small, trying again!");
+				Printer.printSetMessage("numberTooSmall");
 			else if (input > LegendsPlayerHeroTeam.ABSOLUTE_MAX_HEROES_PER_PLAYER)
-				System.out.println("Value provided too large, trying again!");
+				Printer.printSetMessage("numberTooLarge");
 			else
 				return input;
 
@@ -87,8 +101,7 @@ public class LegendsPlayerHeroTeam implements Iterable<LegendsHero> {
 		String input = "";
 
 		while (true) {
-			System.out.println();
-			System.out.println("Would you like to create your own heroes? ('Y'/'N')");
+			Printer.printMSG("Would you like to create your own heroes? ('Y'/'N')");
 
 			input = scanner.nextLine();
 
@@ -100,7 +113,7 @@ public class LegendsPlayerHeroTeam implements Iterable<LegendsHero> {
 			case "n":
 				return false;
 			default:
-				System.out.println("Invalid entry! Trying again!");
+				Printer.printSetMessage("invalidResponse");
 			}
 		}
 	}
@@ -111,12 +124,12 @@ public class LegendsPlayerHeroTeam implements Iterable<LegendsHero> {
 
 	public void addHero(LegendsHero h) {
 		if (this.isHeroInGame(h)) {
-			System.out.println("Provided Entity is already in game!");
+			Printer.printMSG("Provided Entity is already in game!");
 			return;
 		}
 
 		if (this.getHeroes().size() == LegendsPlayerHeroTeam.ABSOLUTE_MAX_HEROES_PER_PLAYER) {
-			System.out.println("The current Game has reached max capacity for entites!");
+			Printer.printMSG("The current Game has reached max capacity for entites!");
 			return;
 		}
 
@@ -125,11 +138,11 @@ public class LegendsPlayerHeroTeam implements Iterable<LegendsHero> {
 
 	public void removeHero(LegendsHero h) {
 		if (!this.isHeroInGame(h)) {
-			System.out.println("Provided Entity is not in game!");
+			Printer.printMSG("Provided Entity is not in game!");
 			return;
 		}
 		if (this.getHeroes().size() == LegendsPlayerHeroTeam.ABSOLUTE_MIN_HEROES_PER_PLAYER) {
-			System.out.println("The current Game has reached minimum capacity for entites!");
+			Printer.printMSG("The current Game has reached minimum capacity for entites!");
 			return;
 		}
 
@@ -182,7 +195,7 @@ public class LegendsPlayerHeroTeam implements Iterable<LegendsHero> {
 		public LegendsHero next() {
 			LegendsHero h = getHeroes().get(index);
 			this.index++;
-			
+
 			if (this.index >= getHeroes().size())
 				this.index = 0;
 

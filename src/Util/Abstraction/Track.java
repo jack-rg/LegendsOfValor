@@ -8,19 +8,38 @@
 /*    - Victor Vicente                                 */
 /*=====================================================*/
 
-package Map.Places.Plains;
+package Util.Abstraction;
 
-import Util.Token;
-import Util.Abstraction.Track;
+import Map.Places.Place;
 
-public class Bush extends Plains {
+public abstract class Track {
+	
+	private int trackID;
 
 	/* =================== */
 	/* Constructor Methods */
 	/* =================== */
 	
-	public Bush(Track track, int row, int col, Token plainToken) {
-		super(track, row, col, plainToken, "Dexterity");
+	public Track(int trackID) {
+		this.trackID = trackID;
+	}
+	
+	/* ================ */
+	/* Abstract Methods */
+	/* ================ */
+	
+	public abstract Place getPlace(int row, int col);
+
+	/* ===================== */
+	/* Getter/Setter Methods */
+	/* ===================== */
+	
+	public int getTrackID() {
+		return trackID;
+	}
+
+	public void setTrackID(int newID) {
+		trackID = newID;
 	}
 
 }

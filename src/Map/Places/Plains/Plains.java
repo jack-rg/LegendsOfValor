@@ -1,6 +1,15 @@
+/*=====================================================*/
+/* Project Title: Legends Of Valor                     */
+/* Course Name: GRS CS611                              */
+/* Semester: Spring '21                                */
+/* Project Authors:                                    */
+/*    - Jack Giunta                                    */
+/*    - Victoria-Rose Burke                            */
+/*    - Victor Vicente                                 */
+/*=====================================================*/
+
 package Map.Places.Plains;
 
-//Common Tile Place in an RPG
 import java.util.*;
 
 import Entities.LegendsEntity;
@@ -15,28 +24,38 @@ import Items.LegendsPotion;
 import Items.LegendsSpell;
 import Items.LegendsWeapon;
 import Map.Places.Place;
-import Map.Tracks.Track;
 import Util.Token;
+import Util.Abstraction.Track;
 import Util.Creation.ItemGenerator;
+import Util.Printer;
 import Util.State;
 
 public class Plains extends Place {
+
+	// Absolute possible list of Buffs that the specific Plains cell can have
 	public static final ArrayList<String> POSSIBLE_BUFFS = new ArrayList<String>(
 			Arrays.asList(new String[] { "Dexterity", "Strength", "Agility", "None" }));
 
+	// Stat that this specific Plains cell boosts
 	private String statToBoost;
 
 	private ArrayList<LegendsHero> leftOverHeroes;
 	private ArrayList<LegendsMonster> leftOverMonsters;
 	private ArrayList<LegendsHero> deadHeroes;
 
-	HashMap<LegendsHero, LegendsMonster> matchings;
+	private HashMap<LegendsHero, LegendsMonster> matchings;
 
-	HashMap<LegendsEntity, HashMap<String, Integer>> effectCounters;
+	private Scanner in;
+
+	/* =================== */
+	/* Constructor Methods */
+	/* =================== */
 
 	public Plains(Track track, int row, int col, Token plainToken, String statToBoost) {
 		super(track, row, col, true, plainToken);
 		this.setStatToBoost(statToBoost);
+
+		in = new Scanner(System.in);
 
 		leftOverHeroes = new ArrayList<LegendsHero>();
 		leftOverMonsters = new ArrayList<LegendsMonster>();
@@ -44,19 +63,29 @@ public class Plains extends Place {
 		deadHeroes = new ArrayList<LegendsHero>();
 
 		matchings = new HashMap<LegendsHero, LegendsMonster>();
-		effectCounters = new HashMap<LegendsEntity, HashMap<String, Integer>>();
 	}
 
+	/* ================= */
+	/* Main Game Methods */
+	/* ================= */
+
+	/*
+	 * This is the main entry point method, each time it's called, it checks to see
+	 * if there is at least one Hero and one Monster in the cell, if so, it begins a
+	 * fight.
+	 */
 	public void activatePlace(LegendsEntity e, LegendsOfValor game) {
-		System.out.println("Your party sets out along the road!");
-
-		if (this.getHeroesOnCell().size() >= 1 && this.getMonstersOnCell().size() >= 1) {
+		if (this.getHeroesOnCell().size() >= 1 && this.getMonstersOnCell().size() >= 1)
 			fightSequence(game);
-		}
 	}
 
-	public void fightSequence(LegendsOfValor game) {
-		System.out.println("Oh no! A Monster Ambush!");
+	/*
+	 * This is the actual fight sequence method, it makes the appropriate Monster v
+	 * Hero matches, and deals with deaths/quitting/winning/losing. It also calls
+	 * the fight method if none of these are needed.
+	 */
+	private void fightSequence(LegendsOfValor game) {
+		Printer.printMSG("You have entered an encounter with a Monster!");
 
 		makeMatchings();
 
@@ -69,11 +98,21 @@ public class Plains extends Place {
 		}
 
 		if (leftOverHeroes.size() > 0)
-			System.out.println("Heroes won!");
+			Printer.printMSG("Heroes won the encounter!");
 		else if (leftOverMonsters.size() > 0)
-			System.out.println("Monsters won!");
+			Printer.printMSG("Monsters won the encounter!");
 	}
 
+	/*
+	 * This method deals with the ins-and-outs of the fight, calling other methods
+	 * to help.
+	 * 
+	 * It gets and performs the Hero move, and checks for Monster death, acting
+	 * according (ie: either killing the monster, or letting it move).
+	 * 
+	 * It also deals with either entities dying, and all the requirements that come
+	 * of it, including leveling, and leftover battles.
+	 */
 	private void heroFight(LegendsHero h, LegendsMonster m, LegendsOfValor game) {
 		String nextMove = this.processUserInput();
 		preformMove(nextMove, h, m, game);
@@ -105,51 +144,94 @@ public class Plains extends Place {
 			if (h.getEntityStats().getEXP() >= h.getEntityStats().getLevel() * 10)
 				h.levelUp();
 		}
-
-		this.dealWithEffects();
 	}
 
-	private void dealWithEffects() {
-		for (LegendsEntity e : this.effectCounters.keySet()) {
-			for (String ability : this.effectCounters.get(e).keySet()) {
-				Integer curr = this.effectCounters.get(e).get(ability);
-				if (curr == 1)
-					this.effectCounters.get(e).remove(ability);
-				else
-					this.effectCounters.get(e).put(ability, curr - 1);
+	@Override
+	public void showInfo() {
+		System.out.println();
 
-				if (this.effectCounters.get(e).isEmpty())
-					this.effectCounters.remove(e);
+		System.out.format("+------------------------+%n");
+		System.out.format("|        HERO INFO       |%n");
+		System.out.format("+------------------------+%n");
+		Printer.printHelperLine(127);
+		System.out.printf(
+				"|                        NAME                        | LEVEL |  HP   |  MANA   |  COINS  |  EXP  |   DEX   | AGILITY | STRENGTH | %n");
+		Printer.printHelperLine(127);
+		for (LegendsHero h : getHeroesOnCell()) {
+			System.out.print(h);
+			Printer.printHelperLine(127);
+		}
+
+		System.out.println();
+
+		System.out.format("+------------------------+%n");
+		System.out.format("|       MONSTER INFO     |%n");
+		System.out.format("+------------------------+%n");
+		Printer.printHelperLine(105);
+		System.out.printf(
+				"|                        NAME                        | LEVEL |  HP   |  EXP  | DODGE | DEFENSE | STRENGTH | %n");
+		Printer.printHelperLine(105);
+		for (LegendsMonster m : getMonstersOnCell()) {
+			System.out.print(m);
+			Printer.printHelperLine(105);
+		}
+
+		System.out.println();
+	}
+
+	/* ====================== */
+	/* Main Hero Game Methods */
+	/* ====================== */
+
+	private void printActions() {
+		System.out.println();
+
+		String leftAlignFormat = "| %-15s | %-4s |%n";
+
+		System.out.format("+------------------------+%n");
+		System.out.format("|         ACTIONS        |%n");
+		System.out.format("+-----------------+------+%n");
+		System.out.format(leftAlignFormat, "check info", "i");
+		System.out.format(leftAlignFormat, "check inventory", "c");
+		System.out.format(leftAlignFormat, "attack monster", "a");
+		System.out.format(leftAlignFormat, "cast spell", "s");
+		System.out.format(leftAlignFormat, "revive teammate", "r");
+		System.out.format(leftAlignFormat, "quit", "q");
+		System.out.format("+-----------------+------+%n");
+
+		System.out.println();
+	}
+
+	/*
+	 * This method gets the actual input for next action from the user
+	 */
+	private String processUserInput() {
+		while (true) {
+			Printer.printMSG("What would you like to do?");
+
+			printActions();
+
+			String input = in.nextLine();
+			switch (input.toLowerCase()) {
+			case "i":
+			case "c":
+			case "a":
+			case "s":
+			case "r":
+			case "q":
+				return input.toLowerCase();
+			default:
+				Printer.printSetMessage("invalidResponse");
+				break;
 			}
 		}
 	}
 
-	private void attackHero(LegendsHero h, LegendsMonster m) {
-
-		double agilityMultiplier = (statToBoost.equals("Agility")) ? 1.10 : 1.0;
-		double dodgeChance = ((LegendsHeroStats) h.getEntityStats()).getAgility() * agilityMultiplier * 0.002;
-
-		if (Math.random() > dodgeChance) {
-			double defenseMultiplier = h.getInventory().getEquippedArmour().getMultiplier();
-
-			int damage = ((LegendsMonsterStats) m.getEntityStats()).getStrength()
-					- ((int) Math.round(((LegendsMonsterStats) m.getEntityStats()).getStrength() * defenseMultiplier));
-
-			if (damage < 0)
-				damage = 0;
-
-			h.getInventory().getEquippedArmour().takeDamage(
-					(int) Math.round(((LegendsMonsterStats) m.getEntityStats()).getStrength() * defenseMultiplier));
-
-			h.getEntityStats().takeDamage(damage);
-
-			System.out.println(m.getName() + " has attacked " + h.getName() + " dealing " + damage + " damage!");
-		} else {
-			System.out.println(h.getName() + " has dodged " + m.getName() + "'s attack!");
-		}
-
-	}
-
+	/*
+	 * This method performs the actual move for the Hero in question, by calling the
+	 * helper methods for each specific move, and dealing with the consequences when
+	 * needed.
+	 */
 	private void preformMove(String nextMove, LegendsHero h, LegendsMonster m, LegendsOfValor game) {
 		switch (nextMove) {
 		case "i":
@@ -173,251 +255,19 @@ public class Plains extends Place {
 			game.quit();
 			break;
 		default:
-			System.out.println("This move is currently invalid. Please input a proper value");
+			Printer.printSetMessage("invalidResponse");
 			break;
 		}
 	}
 
-	private void useItem(LegendsItem item, LegendsHero h, LegendsMonster m) {
-		if (item instanceof LegendsArmour) {
-			h.getInventory().switchArmour((LegendsArmour) item);
-		} else if (item instanceof LegendsWeapon) {
-			h.getInventory().replaceEquippedWeapon((LegendsWeapon) item);
-		} else if (item instanceof LegendsPotion) {
-			this.usePotion(((LegendsPotion) item), h, m);
-		} else {
-			System.out.println("Selected item is unusable!");
-		}
-	}
+	/* ======================== */
+	/* Helper Hero Game Methods */
+	/* ======================== */
 
-	private void usePotion(LegendsPotion p, LegendsHero h, LegendsMonster m) {
-		if (p.getIsBuff()) {
-			this.usePotionOnFriendly(p, h);
-		} else {
-			this.usePotionOnEnemy(p, h, m);
-		}
-	}
-
-	private void usePotionOnEnemy(LegendsPotion p, LegendsHero h, LegendsMonster m) {
-		switch (p.getTargetAbility()) {
-		case "Strength":
-		case "Defense":
-		case "Dodge":
-			((LegendsMonsterStats) m.getEntityStats()).applyDebuff(p.getTargetAbility(), p.getMultiplier());
-
-			if (this.effectCounters.containsKey(m)) {
-				this.effectCounters.get(m).put(p.getTargetAbility(), 5);
-			} else {
-				HashMap<String, Integer> effectDetails = new HashMap<String, Integer>();
-				effectDetails.put(p.getTargetAbility(), 5);
-
-				this.effectCounters.put(m, effectDetails);
-			}
-
-			System.out.println(
-					h.getName() + " used " + p.getName() + " to debuff " + m.getName() + " 's " + p.getTargetAbility());
-			break;
-		default:
-			System.out.println("ERROR!!!");
-			break;
-		}
-	}
-
-	private void usePotionOnFriendly(LegendsPotion p, LegendsHero h) {
-		@SuppressWarnings("unused")
-		int choice;
-
-		while (true) {
-			System.out.println("Please pick an ally to assist!");
-			int i = 0;
-			for (LegendsHero hero : matchings.keySet()) {
-				System.out.println("[" + i + "] " + hero.getName());
-				i++;
-			}
-
-			choice = in.nextInt();
-
-			if (i >= 0 && i < matchings.keySet().size()) {
-				LegendsHero choiceHero = (LegendsHero) matchings.keySet().toArray()[i];
-
-				switch (p.getTargetAbility()) {
-				case "Strength":
-				case "Defense":
-				case "Dodge":
-					((LegendsHeroStats) choiceHero.getEntityStats()).applyBuff(p.getTargetAbility(), p.getMultiplier());
-
-					if (this.effectCounters.containsKey(choiceHero)) {
-						this.effectCounters.get(choiceHero).put(p.getTargetAbility(), 5);
-					} else {
-						HashMap<String, Integer> effectDetails = new HashMap<String, Integer>();
-						effectDetails.put(p.getTargetAbility(), 5);
-
-						this.effectCounters.put(choiceHero, effectDetails);
-					}
-
-					System.out.println(h.getName() + " used " + p.getName() + " to boost " + choiceHero.getName()
-							+ " 's " + p.getTargetAbility());
-					break;
-				default:
-					System.out.println("ERROR!!!");
-					break;
-				}
-			} else {
-				System.out.println("Invalid option! Trying again!");
-			}
-		}
-
-	}
-
-	private void revive(LegendsHero h) {
-		if (this.deadHeroes.isEmpty()) {
-			System.out.println("No heroes are dead!");
-			return;
-		}
-
-		LegendsHero toRevive = this.pickRevive();
-
-		System.out.println(h.getName() + " has revived " + toRevive.getName());
-
-		((LegendsHeroStats) toRevive.getEntityStats()).regenHealth(1);
-		((LegendsHeroStats) toRevive.getEntityStats()).regenMana(1);
-		this.leftOverHeroes.add(toRevive);
-	}
-
-	private LegendsHero pickRevive() {
-
-		System.out.println("Currently dead Heroes:");
-
-		for (int i = 0; i < this.deadHeroes.size(); i++)
-			System.out.println("[" + i + "] " + deadHeroes.get(i).getName());
-
-		System.out.println();
-		System.out.println("Please enter the number of the Hero you want to revive:");
-
-		while (true) {
-			int picked = in.nextInt();
-			if (picked >= 0 && picked < deadHeroes.size()) {
-				return deadHeroes.remove(picked);
-			}
-
-			System.out.println("Invalid number choosen! Trying again!");
-		}
-	}
-
-	private void castSpell(LegendsHero h, LegendsMonster m) {
-		LegendsSpell spellToCast = h.getInventory().pickSpell();
-
-		if (spellToCast == null)
-			return;
-
-		if (spellToCast.getIsBuff()) {
-			this.castSpellOnFriendly(spellToCast, h);
-		} else {
-			this.castSpellOnEnemy(spellToCast, h, m);
-		}
-	}
-
-	private void castSpellOnFriendly(LegendsSpell spellToCast, LegendsHero h) {
-		@SuppressWarnings("unused")
-		int choice;
-
-		while (true) {
-			System.out.println("Please pick an ally to assist!");
-			int i = 0;
-			for (LegendsHero hero : matchings.keySet()) {
-				System.out.println("[" + i + "] " + hero.getName());
-				i++;
-			}
-
-			choice = in.nextInt();
-
-			if (i >= 0 && i < matchings.keySet().size()) {
-				LegendsHero choiceHero = (LegendsHero) matchings.keySet().toArray()[i];
-
-				switch (spellToCast.getTargetAbility()) {
-				case "Strength":
-				case "Defense":
-				case "Dodge":
-					((LegendsHeroStats) choiceHero.getEntityStats()).applyBuff(spellToCast.getTargetAbility(),
-							spellToCast.getMultiplier());
-
-					if (this.effectCounters.containsKey(choiceHero)) {
-						this.effectCounters.get(choiceHero).put(spellToCast.getTargetAbility(), 5);
-					} else {
-						HashMap<String, Integer> effectDetails = new HashMap<String, Integer>();
-						effectDetails.put(spellToCast.getTargetAbility(), 5);
-
-						this.effectCounters.put(choiceHero, effectDetails);
-					}
-
-					System.out.println(h.getName() + " used " + spellToCast.getName() + " to boost "
-							+ choiceHero.getName() + " 's " + spellToCast.getTargetAbility());
-
-					break;
-				default:
-					System.out.println("ERROR!!!");
-					break;
-				}
-			} else {
-				System.out.println("Invalid option! Trying again!");
-			}
-		}
-
-	}
-
-	private void castSpellOnEnemy(LegendsSpell spellToCast, LegendsHero h, LegendsMonster m) {
-		double dodgeChance = ((LegendsMonsterStats) m.getEntityStats()).getDodge() * 0.1;
-
-		if (Math.random() > dodgeChance && spellToCast != null) {
-			if (((LegendsHeroStats) h.getEntityStats()).getCurrMana() < spellToCast.getManaRequired()) {
-				System.out.println(h.getName() + " does not have enough Mana to cast " + spellToCast.getName());
-			} else {
-				((LegendsHeroStats) h.getEntityStats()).spendMana(spellToCast.getManaRequired());
-
-				int spellBaseDamage = (int) Math.round(spellToCast.getMaxDamage()
-						* (h.getEntityStats().getLevel() / ItemGenerator.LEVEL_TO_UNLOCK_EVERYTHING));
-
-				double dexMultiplier = (statToBoost.equals("Dexterity")) ? 1.10 : 1.0;
-
-				int dexDamage = (int) Math.round(spellBaseDamage
-						+ ((((LegendsHeroStats) h.getEntityStats()).getDexterity() * dexMultiplier) / 10000.0)
-								* spellBaseDamage);
-
-				int damage = dexDamage - ((LegendsMonsterStats) m.getEntityStats()).getDefense();
-
-				System.out.println(h.getName() + " attacked " + m.getName() + " using " + spellToCast.getName()
-						+ " dealing " + damage + " damage to them!");
-
-				switch (spellToCast.getTargetAbility()) {
-				case "Strength":
-				case "Defense":
-				case "Dodge":
-					((LegendsMonsterStats) m.getEntityStats()).applyDebuff(spellToCast.getTargetAbility(),
-							spellToCast.getMultiplier());
-
-					if (this.effectCounters.containsKey(m)) {
-						this.effectCounters.get(m).put(spellToCast.getTargetAbility(), 5);
-					} else {
-						HashMap<String, Integer> effectDetails = new HashMap<String, Integer>();
-						effectDetails.put(spellToCast.getTargetAbility(), 5);
-
-						this.effectCounters.put(m, effectDetails);
-					}
-
-					System.out.println(h.getName() + " attacked " + m.getName() + " using " + spellToCast.getName()
-							+ " and applied a debuff to their " + spellToCast.getTargetAbility());
-
-					break;
-				default:
-					System.out.println("ERROR!!!");
-					break;
-				}
-			}
-		} else {
-			System.out.println(m.getName() + " dodged the magic attack from " + h.getName());
-		}
-	}
-
+	/*
+	 * This method preforms a physical attack on the Monster, dealing with the
+	 * intricate requirements for stats/damage/hp/etc...
+	 */
 	private void attackMonster(LegendsHero h, LegendsMonster m) {
 		double dodgeChance = ((LegendsMonsterStats) m.getEntityStats()).getDodge() * 0.1;
 		if (Math.random() > dodgeChance) {
@@ -443,78 +293,309 @@ public class Plains extends Place {
 				h.getInventory().getEquippedWeapon().loseDurability(1);
 
 				if (h.getInventory().getEquippedWeapon().getCurrentDurability() <= 0) {
-					System.out.println(h.getName() + "'s weapon " + h.getInventory().getEquippedWeapon().getName()
+					Printer.printMSG(h.getName() + "'s weapon " + h.getInventory().getEquippedWeapon().getName()
 							+ " has been broken!");
 					h.getInventory().replaceEquippedWeapon(null);
 				}
 			}
 
-			System.out.println(h.getName() + " has attacked " + m.getName() + " using " + weaponName + " and dealing "
+			Printer.printMSG(h.getName() + " has attacked " + m.getName() + " using " + weaponName + " and dealing "
 					+ finalDamage + " damage!");
 
-		} else {
-			System.out.println(m.getName() + " has dodged " + h.getName() + "'s attack!");
-		}
+		} else
+			Printer.printMSG(m.getName() + " has dodged " + h.getName() + "'s attack!");
 
 	}
 
-	private String processUserInput() {
+	/*
+	 * This method deals with the leftovers of using the selected item.
+	 */
+	private void useItem(LegendsItem item, LegendsHero h, LegendsMonster m) {
+		if (item instanceof LegendsArmour)
+			h.getInventory().switchArmour((LegendsArmour) item);
+		else if (item instanceof LegendsWeapon)
+			h.getInventory().replaceEquippedWeapon((LegendsWeapon) item);
+		else if (item instanceof LegendsPotion)
+			this.usePotion(((LegendsPotion) item), h, m);
+		else
+			Printer.printSetMessage("illegalItemChoice");
+	}
+
+	/*
+	 * The following three methods deal with the use of a Potion, either on an Ally,
+	 * or a Monster (since in this game they can do both).
+	 * 
+	 * For the usage on an enemy, it simply uses it on the enemy the Hero is matched
+	 * with, applying the debuff.
+	 * 
+	 * For the usage on a friendly, it'll first display a list of Friendlies on the
+	 * board, and allow the selection of one, before doing the same thing it does if
+	 * it were a monster.
+	 */
+	private void usePotion(LegendsPotion p, LegendsHero h, LegendsMonster m) {
+		if (p.getIsBuff())
+			this.usePotionOnFriendly(p, h);
+		else
+			this.usePotionOnEnemy(p, h, m);
+	}
+
+	private void usePotionOnEnemy(LegendsPotion p, LegendsHero h, LegendsMonster m) {
+		switch (p.getTargetAbility()) {
+		case "Strength":
+		case "Defense":
+		case "Dodge":
+			((LegendsMonsterStats) m.getEntityStats()).applyDebuff(p.getTargetAbility(), p.getMultiplier());
+
+			Printer.printMSG(
+					h.getName() + " used " + p.getName() + " to debuff " + m.getName() + " 's " + p.getTargetAbility());
+			break;
+		default:
+			Printer.printSetMessage("invalidAbility");
+			break;
+		}
+	}
+
+	private void usePotionOnFriendly(LegendsPotion p, LegendsHero h) {
+		boolean flag = true;
+		while (flag) {
+			Printer.printMSG("Please pick an ally to assist!");
+
+			int i = 0;
+			for (LegendsHero hero : matchings.keySet()) {
+				System.out.println("[" + i + "] " + hero.getName());
+				i++;
+			}
+			System.out.println();
+
+			int choice = in.nextInt();
+
+			if (choice >= 0 && choice < matchings.keySet().size()) {
+				LegendsHero choiceHero = (LegendsHero) matchings.keySet().toArray()[choice];
+
+				switch (p.getTargetAbility()) {
+				case "Strength":
+				case "Defense":
+				case "Dodge":
+					((LegendsHeroStats) choiceHero.getEntityStats()).applyBuff(p.getTargetAbility(), p.getMultiplier());
+
+					Printer.printMSG(h.getName() + " used " + p.getName() + " to boost " + choiceHero.getName() + " 's "
+							+ p.getTargetAbility());
+
+					flag = false;
+					break;
+				default:
+					Printer.printSetMessage("invalidAbility");
+					break;
+				}
+			} else
+				Printer.printSetMessage("invalidResponse");
+		}
+	}
+
+	/*
+	 * The two methods below make up the revive sequence. The first method is the
+	 * core revive, it calls the second to get the Hero to revive, and then revives
+	 * them.
+	 * 
+	 * The second method simply allows the Player to pick which Hero to revive.
+	 */
+	private void revive(LegendsHero h) {
+		if (this.deadHeroes.isEmpty()) {
+			Printer.printMSG("No heroes are dead!");
+			return;
+		}
+
+		LegendsHero toRevive = this.pickRevive();
+
+		Printer.printMSG(h.getName() + " has revived " + toRevive.getName());
+
+		((LegendsHeroStats) toRevive.getEntityStats()).regenHealth(1);
+		((LegendsHeroStats) toRevive.getEntityStats()).regenMana(1);
+		this.leftOverHeroes.add(toRevive);
+	}
+
+	private LegendsHero pickRevive() {
+
+		Printer.printMSG("Currently dead Heroes:");
+
+		for (int i = 0; i < this.deadHeroes.size(); i++)
+			System.out.println("[" + i + "] " + deadHeroes.get(i).getName());
+
+		Printer.printMSG("Please enter the number of the Hero you want to revive:");
+
 		while (true) {
-			System.out.println("What would you like to do?");
-			printActions();
-			String input = in.nextLine();
-			switch (input.toLowerCase()) {
-			case "i":
-			case "c":
-			case "a":
-			case "s":
-			case "r":
-			case "q":
-				return input.toLowerCase();
-			default:
-				System.out.println("This move is currently invalid. Please input a proper value");
-				break;
-			}
+			int picked = in.nextInt();
+			if (picked >= 0 && picked < deadHeroes.size())
+				return deadHeroes.remove(picked);
+
+			Printer.printSetMessage("invalidResponse");
 		}
 	}
 
-	public void printActions() {
-		String leftAlignFormat = "| %-15s | %-4s |%n";
+	/*
+	 * The following three methods make up the castSpell section. Together they
+	 * handle the entire sequence of picking and casting a spell on a Friendly or
+	 * Enemy.
+	 * 
+	 * The first method is the core, it picks what spell to use, and then moves to
+	 * either the Friendly or Enemy methods in relation to that choice.
+	 * 
+	 * The Enemy casts the spell on the Monster the Hero is engaged with, it also
+	 * deals with all the requirements for damage/dodging/boosts etc...
+	 * 
+	 * Meanwhile the Friendly method allows for the choice of which Friendly to
+	 * boost, and deals with the required necessities.
+	 */
+	private void castSpell(LegendsHero h, LegendsMonster m) {
+		LegendsSpell spellToCast = h.getInventory().pickSpell();
 
-		System.out.format("+------------------------+%n");
-		System.out.format("|         ACTIONS        |%n");
-		System.out.format("+-----------------+------+%n");
-		System.out.format(leftAlignFormat, "check info", "i");
-		System.out.format(leftAlignFormat, "check inventory", "c");
-		System.out.format(leftAlignFormat, "attack monster", "a");
-		System.out.format(leftAlignFormat, "cast spell", "s");
-		System.out.format(leftAlignFormat, "revive teammate", "r");
-		System.out.format(leftAlignFormat, "quit", "q");
-		System.out.format("+-----------------+------+%n");
+		if (spellToCast == null)
+			return;
 
+		if (spellToCast.getIsBuff())
+			this.castSpellOnFriendly(spellToCast, h);
+		else
+			this.castSpellOnEnemy(spellToCast, h, m);
 	}
 
-	public boolean isFighting() {
-		boolean flagMonster = false;
-		boolean flagHero = false;
-		for (LegendsMonster m : this.getMonstersOnCell()) {
-			if (m.getEntityStats().getCurrHP() > 0) {
-				flagMonster = true;
+	private void castSpellOnEnemy(LegendsSpell spellToCast, LegendsHero h, LegendsMonster m) {
+		double dodgeChance = ((LegendsMonsterStats) m.getEntityStats()).getDodge() * 0.1;
+
+		if (Math.random() > dodgeChance && spellToCast != null) {
+			if (((LegendsHeroStats) h.getEntityStats()).getCurrMana() < spellToCast.getManaRequired())
+				Printer.printMSG(h.getName() + " does not have enough Mana to cast " + spellToCast.getName());
+			else {
+				((LegendsHeroStats) h.getEntityStats()).spendMana(spellToCast.getManaRequired());
+
+				int spellBaseDamage = (int) Math.round(spellToCast.getMaxDamage()
+						* (h.getEntityStats().getLevel() / ItemGenerator.LEVEL_TO_UNLOCK_EVERYTHING));
+
+				double dexMultiplier = (statToBoost.equals("Dexterity")) ? 1.10 : 1.0;
+
+				int dexDamage = (int) Math.round(spellBaseDamage
+						+ ((((LegendsHeroStats) h.getEntityStats()).getDexterity() * dexMultiplier) / 10000.0)
+								* spellBaseDamage);
+
+				int damage = dexDamage - ((LegendsMonsterStats) m.getEntityStats()).getDefense();
+
+				Printer.printMSG(h.getName() + " attacked " + m.getName() + " using " + spellToCast.getName()
+						+ " dealing " + damage + " damage to them!");
+
+				switch (spellToCast.getTargetAbility()) {
+				case "Strength":
+				case "Defense":
+				case "Dodge":
+					((LegendsMonsterStats) m.getEntityStats()).applyDebuff(spellToCast.getTargetAbility(),
+							spellToCast.getMultiplier());
+
+					Printer.printMSG(h.getName() + " attacked " + m.getName() + " using " + spellToCast.getName()
+							+ " and applied a debuff to their " + spellToCast.getTargetAbility());
+
+					break;
+				default:
+					Printer.printSetMessage("invalidAbility");
+					break;
+				}
 			}
-		}
-		for (LegendsHero h : this.getHeroesOnCell()) {
-			if (h.getEntityStats().getCurrHP() > 0) {
-				flagHero = true;
-			}
-		}
-		return flagHero && flagMonster;
+		} else
+			Printer.printMSG(m.getName() + " dodged the magic attack from " + h.getName());
 	}
 
+	private void castSpellOnFriendly(LegendsSpell spellToCast, LegendsHero h) {
+		boolean flag = true;
+		while (flag) {
+			Printer.printMSG("Please pick an ally to assist!");
+			int i = 0;
+			for (LegendsHero hero : matchings.keySet()) {
+				System.out.println("[" + i + "] " + hero.getName());
+				i++;
+			}
+			System.out.println();
+
+			int choice = in.nextInt();
+
+			if (choice >= 0 && choice < matchings.keySet().size()) {
+				LegendsHero choiceHero = (LegendsHero) matchings.keySet().toArray()[choice];
+
+				switch (spellToCast.getTargetAbility()) {
+				case "Strength":
+				case "Defense":
+				case "Dodge":
+					((LegendsHeroStats) choiceHero.getEntityStats()).applyBuff(spellToCast.getTargetAbility(),
+							spellToCast.getMultiplier());
+
+					Printer.printMSG(h.getName() + " used " + spellToCast.getName() + " to boost "
+							+ choiceHero.getName() + " 's " + spellToCast.getTargetAbility());
+
+					flag = false;
+					break;
+				default:
+					Printer.printSetMessage("invalidAbility");
+					break;
+				}
+			} else
+				Printer.printSetMessage("invalidResponse");
+		}
+	}
+
+	/* ========================= */
+	/* Main Monster Game Methods */
+	/* ========================= */
+
+	private void attackHero(LegendsHero h, LegendsMonster m) {
+		double agilityMultiplier = (statToBoost.equals("Agility")) ? 1.10 : 1.0;
+		double dodgeChance = ((LegendsHeroStats) h.getEntityStats()).getAgility() * agilityMultiplier * 0.002;
+
+		if (Math.random() > dodgeChance) {
+			double defenseMultiplier = h.getInventory().getEquippedArmour().getMultiplier();
+
+			int damage = ((LegendsMonsterStats) m.getEntityStats()).getStrength()
+					- ((int) Math.round(((LegendsMonsterStats) m.getEntityStats()).getStrength() * defenseMultiplier));
+
+			if (damage < 0)
+				damage = 0;
+
+			h.getInventory().getEquippedArmour().takeDamage(
+					(int) Math.round(((LegendsMonsterStats) m.getEntityStats()).getStrength() * defenseMultiplier));
+
+			h.getEntityStats().takeDamage(damage);
+
+			Printer.printMSG(m.getName() + " has attacked " + h.getName() + " dealing " + damage + " damage!");
+		} else
+			Printer.printMSG(h.getName() + " has dodged " + m.getName() + "'s attack!");
+	}
+
+	/* ===================== */
+	/* Getter/Setter Methods */
+	/* ===================== */
+
+	public String getStatToBoost() {
+		return statToBoost;
+	}
+
+	private void setStatToBoost(String statToBoost) {
+		if (Plains.POSSIBLE_BUFFS.indexOf(statToBoost) == -1) {
+			System.out.println("Invalid Stat To Boost!");
+			return;
+		}
+		this.statToBoost = statToBoost;
+	}
+
+	/* ==================== */
+	/* Aux Matching Methods */
+	/* ==================== */
+
+	/*
+	 * Adjusts current matchings if there are both leftover Heroes and Monsters
+	 */
 	private void reMatch() {
 		while ((!leftOverHeroes.isEmpty()) && (!leftOverMonsters.isEmpty()))
 			this.matchings.put(leftOverHeroes.remove(0), leftOverMonsters.remove(0));
 	}
 
+	/*
+	 * Makes the initial Matchings
+	 */
 	private void makeMatchings() {
 		@SuppressWarnings("unchecked")
 		ArrayList<LegendsMonster> copyMonsters = (ArrayList<LegendsMonster>) this.getMonstersOnCell().clone();
@@ -529,47 +610,5 @@ public class Plains extends Place {
 
 		for (LegendsMonster m : copyMonsters)
 			this.leftOverMonsters.add(m);
-	}
-
-	public String getStatToBoost() {
-		return statToBoost;
-	}
-
-	private void setStatToBoost(String statToBoost) {
-		if (Plains.POSSIBLE_BUFFS.indexOf(statToBoost) == -1) {
-			System.out.println("Invalid Stat To Boost!");
-			return;
-		}
-		this.statToBoost = statToBoost;
-	}
-
-	@Override
-	public void showInfo() {
-
-		System.out.format("+------------------------+%n");
-		System.out.format("|        HERO INFO       |%n");
-		System.out.format("+------------------------+%n");
-		LegendsOfValor.helperLine(127);
-		System.out.printf(
-				"|                        NAME                        | LEVEL |  HP   |  MANA   |  COINS  |  EXP  |   DEX   | AGILITY | STRENGTH | %n");
-		LegendsOfValor.helperLine(127);
-		for (LegendsHero h : getHeroesOnCell()) {
-			System.out.print(h);
-			LegendsOfValor.helperLine(127);
-		}
-		
-		System.out.println();
-
-		System.out.format("+------------------------+%n");
-		System.out.format("|       MONSTER INFO     |%n");
-		System.out.format("+------------------------+%n");
-		LegendsOfValor.helperLine(105);
-		System.out.printf(
-				"|                        NAME                        | LEVEL |  HP   |  EXP  | DODGE | DEFENSE | STRENGTH | %n");
-		LegendsOfValor.helperLine(105);
-		for (LegendsMonster m : getMonstersOnCell()) {
-			System.out.print(m);
-			LegendsOfValor.helperLine(105);
-		}
 	}
 }

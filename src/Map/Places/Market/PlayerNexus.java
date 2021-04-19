@@ -8,8 +8,19 @@
 /*    - Victor Vicente                                 */
 /*=====================================================*/
 
-package Util;
+package Map.Places.Market;
 
-public enum State {
-	  PLAYING, QUIT, WIN, LOSE;
+import Util.Token;
+import Util.Abstraction.Track;
+
+public class PlayerNexus extends Nexus {
+
+	/* =================== */
+	/* Constructor Methods */
+	/* =================== */
+
+	public PlayerNexus(Track track, int row, int col, Token nexusType) {
+		super(track, row, col, nexusType);
+	}
+
 }

@@ -1,3 +1,13 @@
+/*=====================================================*/
+/* Project Title: Legends Of Valor                     */
+/* Course Name: GRS CS611                              */
+/* Semester: Spring '21                                */
+/* Project Authors:                                    */
+/*    - Jack Giunta                                    */
+/*    - Victoria-Rose Burke                            */
+/*    - Victor Vicente                                 */
+/*=====================================================*/
+
 package Entities;
 
 import Entities.Classes.LegendsEntityClass;
@@ -45,6 +55,8 @@ public abstract class LegendsEntity {
 	public abstract void updatePosition(int x, int y, LegendsOfValor game);
 	
 	public abstract void resetPosition();
+	
+	public abstract void levelUp();
 	
 	/* ===================== */
 	/* Getter/Setter Methods */

@@ -1,3 +1,13 @@
+/*=====================================================*/
+/* Project Title: Legends Of Valor                     */
+/* Course Name: GRS CS611                              */
+/* Semester: Spring '21                                */
+/* Project Authors:                                    */
+/*    - Jack Giunta                                    */
+/*    - Victoria-Rose Burke                            */
+/*    - Victor Vicente                                 */
+/*=====================================================*/
+
 package Entities.Classes;
 
 public class LegendsEntityClass {
@@ -12,16 +22,16 @@ public class LegendsEntityClass {
 		this.setClassName(className);
 	}
 
-	public void setClassName(String className) {
-		this.className = className;
-	}
-
 	/* ===================== */
 	/* Getter/Setter Methods */
 	/* ===================== */
 
 	public String getClassName() {
 		return this.className;
+	}
+	
+	public void setClassName(String className) {
+		this.className = className;
 	}
 
 	/* =========== */

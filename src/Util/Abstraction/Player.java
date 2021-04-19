@@ -1,6 +1,18 @@
-package Util;
+/*=====================================================*/
+/* Project Title: Legends Of Valor                     */
+/* Course Name: GRS CS611                              */
+/* Semester: Spring '21                                */
+/* Project Authors:                                    */
+/*    - Jack Giunta                                    */
+/*    - Victoria-Rose Burke                            */
+/*    - Victor Vicente                                 */
+/*=====================================================*/
+
+package Util.Abstraction;
 
 import java.util.Scanner;
+
+import Util.Printer;
 
 public class Player extends Entity {
 
@@ -46,15 +58,12 @@ public class Player extends Entity {
 
 		while (cont) {
 			contTwo = true;
-			System.out.println();
-			System.out.println("Please enter the name for " + this.getName() + ":");
+			Printer.printMSG("Please enter the name for " + this.getName() + ":");
 
 			answer = input.nextLine();
 
 			while (contTwo) {
-				System.out.println();
-				System.out.println("Entered name: " + answer);
-				System.out.println("Are you happy with this name? (Y/N)");
+				Printer.printMSG("Entered name: " + answer + "\n" + "Are you happy with this name? (Y/N)");
 
 				yN = input.nextLine();
 
@@ -66,11 +75,11 @@ public class Player extends Entity {
 					break;
 				case "N":
 				case "n":
-					System.out.println("Prompting for name again...");
+					Printer.printMSG("Prompting for name again...");
 					contTwo = false;
 					break;
 				default:
-					System.out.println("Invalid Input!! Only inputs allowed are: 'Y'/'y'/'N'/'n'");
+					Printer.printSetMessage("invalidResponse");
 					break;
 				}
 			}

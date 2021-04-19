@@ -1,3 +1,13 @@
+/*=====================================================*/
+/* Project Title: Legends Of Valor                     */
+/* Course Name: GRS CS611                              */
+/* Semester: Spring '21                                */
+/* Project Authors:                                    */
+/*    - Jack Giunta                                    */
+/*    - Victoria-Rose Burke                            */
+/*    - Victor Vicente                                 */
+/*=====================================================*/
+
 package Map.Places;
 
 import java.util.ArrayList;
@@ -6,16 +16,22 @@ import Entities.LegendsEntity;
 import Entities.LegendsHero;
 import Entities.LegendsMonster;
 import Game.LegendsOfValor;
-import Map.Cell;
-import Map.Tracks.Track;
 import Util.Token;
+import Util.Abstraction.Cell;
+import Util.Abstraction.Track;
 
-//Specifies the components of a location in an RPG
 public abstract class Place extends Cell {
+
 	private ArrayList<LegendsHero> heroesOnCell;
 	private ArrayList<LegendsMonster> monstersOnCell;
-	public boolean accessiblity;
-	public Track currTrack;
+
+	private boolean accessiblity;
+
+	private Track currTrack;
+
+	/* =================== */
+	/* Constructor Methods */
+	/* =================== */
 
 	public Place(Track track, int row, int col, boolean accessiblity, Token design) {
 		super(row, col, design);
@@ -30,29 +46,33 @@ public abstract class Place extends Cell {
 		this.accessiblity = accessiblity;
 	}
 
+	/* ================ */
+	/* Abstract Methods */
+	/* ================ */
+
+	public abstract void activatePlace(LegendsEntity e, LegendsOfValor game);
+
+	public abstract void showInfo();
+
+	/* ===================== */
+	/* Getter/Setter Methods */
+	/* ===================== */
+
 	public void addHeroOnCell(LegendsHero h) {
 		heroesOnCell.add(h);
-		System.out.println(heroesOnCell.size());
 	}
-	
+
 	public void addMonsterOnCell(LegendsMonster m) {
 		monstersOnCell.add(m);
-		System.out.println(monstersOnCell.size());
 	}
-	
+
 	public void removeHeroOnCell(LegendsHero h) {
 		heroesOnCell.remove(h);
-		System.out.println(heroesOnCell.size());
 	}
-	
+
 	public void removeMonsterOnCell(LegendsMonster m) {
 		monstersOnCell.remove(m);
-		System.out.println(monstersOnCell.size());
 	}
-	
-	public abstract void activatePlace(LegendsEntity e, LegendsOfValor game);
-	
-	public abstract void showInfo();
 
 	public boolean isAccessible() {
 		return accessiblity;

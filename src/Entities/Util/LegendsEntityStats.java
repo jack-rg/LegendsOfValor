@@ -1,3 +1,13 @@
+/*=====================================================*/
+/* Project Title: Legends Of Valor                     */
+/* Course Name: GRS CS611                              */
+/* Semester: Spring '21                                */
+/* Project Authors:                                    */
+/*    - Jack Giunta                                    */
+/*    - Victoria-Rose Burke                            */
+/*    - Victor Vicente                                 */
+/*=====================================================*/
+
 package Entities.Util;
 
 import Entities.Classes.LegendsEntityClass;
@@ -9,6 +19,10 @@ public abstract class LegendsEntityStats {
 	private int hp;
 	private int maxHP;
 	private boolean alive;
+	
+	/* =================== */
+	/* Constructor Methods */
+	/* =================== */
 
 	public LegendsEntityStats(int exp, int level, int maxHP) {
 		this.exp = exp;
@@ -18,9 +32,16 @@ public abstract class LegendsEntityStats {
 		this.alive = true;
 	}
 	
+	/* ================ */
+	/* Abstract Methods */
+	/* ================ */
 	
 	public abstract void levelUp(LegendsEntityClass eClass);
 
+	/* ===================== */
+	/* Getter/Setter Methods */
+	/* ===================== */
+	
 	public void resetStats() {
 		this.exp = 0;
 		this.level = 1;

@@ -1,9 +1,20 @@
+/*=====================================================*/
+/* Project Title: Legends Of Valor                     */
+/* Course Name: GRS CS611                              */
+/* Semester: Spring '21                                */
+/* Project Authors:                                    */
+/*    - Jack Giunta                                    */
+/*    - Victoria-Rose Burke                            */
+/*    - Victor Vicente                                 */
+/*=====================================================*/
+
 package Entities.Util.Hero;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
 import Items.LegendsArmour;
+import Util.Printer;
 
 public class LegendsHeroArmour {
 
@@ -24,6 +35,10 @@ public class LegendsHeroArmour {
 	/* Game Methods */
 	/* ============ */
 
+	/*
+	 * This method gets the overall defense multiplier of the currently equipped
+	 * armour
+	 */
 	public double getMultiplier() {
 		double headMultiplier = 0.0;
 		if (this.getHeadPiece() != null)
@@ -58,7 +73,7 @@ public class LegendsHeroArmour {
 		if (this.getHeadPiece() != null) {
 			boolean brokeHeadPiece = this.getHeadPiece().loseDurability(damageToHead);
 			if (brokeHeadPiece) {
-				System.out.println("You just broke your " + this.getHeadPiece());
+				Printer.printMSG("You just broke your " + this.getHeadPiece().getName());
 				this.removeHeadPiece();
 			}
 		}
@@ -66,7 +81,7 @@ public class LegendsHeroArmour {
 		if (this.getChestPiece() != null) {
 			boolean brokeChestPiece = this.getChestPiece().loseDurability(damageToChest);
 			if (brokeChestPiece) {
-				System.out.println("You just broke your " + this.getHeadPiece());
+				Printer.printMSG("You just broke your " + this.getChestPiece().getName());
 				this.removeChestPiece();
 			}
 		}
@@ -74,7 +89,7 @@ public class LegendsHeroArmour {
 		if (this.getLegPiece() != null) {
 			boolean brokeLegPiece = this.getLegPiece().loseDurability(damageToLegs);
 			if (brokeLegPiece) {
-				System.out.println("You just broke your " + this.getHeadPiece());
+				Printer.printMSG("You just broke your " + this.getLegPiece().getName());
 				this.removeLegPiece();
 			}
 		}
@@ -82,7 +97,7 @@ public class LegendsHeroArmour {
 		if (this.getFeetPiece() != null) {
 			boolean brokeFeetPiece = this.getFeetPiece().loseDurability(damageToFeet);
 			if (brokeFeetPiece) {
-				System.out.println("You just broke your " + this.getHeadPiece());
+				Printer.printMSG("You just broke your " + this.getFeetPiece().getName());
 				this.removeFeetPiece();
 			}
 		}
@@ -139,7 +154,7 @@ public class LegendsHeroArmour {
 
 	public void setHeadPiece(LegendsArmour newPiece) {
 		if (!newPiece.getSlot().equals("Head")) {
-			System.out.println("Invalid Armour Type Provided!");
+			Printer.printSetMessage("invalidArmourType");
 			return;
 		}
 
@@ -148,7 +163,7 @@ public class LegendsHeroArmour {
 
 	public void setChestPiece(LegendsArmour newPiece) {
 		if (!newPiece.getSlot().equals("Chest")) {
-			System.out.println("Invalid Armour Type Provided!");
+			Printer.printSetMessage("invalidArmourType");
 			return;
 		}
 
@@ -157,7 +172,7 @@ public class LegendsHeroArmour {
 
 	public void setLegPiece(LegendsArmour newPiece) {
 		if (!newPiece.getSlot().equals("Legs")) {
-			System.out.println("Invalid Armour Type Provided!");
+			Printer.printSetMessage("invalidArmourType");
 			return;
 		}
 
@@ -166,12 +181,16 @@ public class LegendsHeroArmour {
 
 	public void setFeetPiece(LegendsArmour newPiece) {
 		if (!newPiece.getSlot().equals("Feet")) {
-			System.out.println("Invalid Armour Type Provided!");
+			Printer.printSetMessage("invalidArmourType");
 			return;
 		}
 
 		this.feetPiece = newPiece;
 	}
+
+	/* =========== */
+	/* Aux Methods */
+	/* =========== */
 
 	public String toString() {
 

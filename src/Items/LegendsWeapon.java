@@ -1,6 +1,18 @@
+/*=====================================================*/
+/* Project Title: Legends Of Valor                     */
+/* Course Name: GRS CS611                              */
+/* Semester: Spring '21                                */
+/* Project Authors:                                    */
+/*    - Jack Giunta                                    */
+/*    - Victoria-Rose Burke                            */
+/*    - Victor Vicente                                 */
+/*=====================================================*/
+
 package Items;
 
 public class LegendsWeapon extends LegendsItem {
+	
+	// Theoretical limits to Weapons
 	public static final int ABSOLUTE_MAX_DAMAGE = 1000;
 	public static final int ABSOLUTE_MAX_DURABILITY = 500;
 
@@ -11,6 +23,10 @@ public class LegendsWeapon extends LegendsItem {
 	private int currentDurability;
 	private int maxDurability;
 
+	/* =================== */
+	/* Constructor Methods */
+	/* =================== */
+	
 	public LegendsWeapon(int ID, String name, int cost, int minLevel, int damage, boolean dualHanded,
 			int maxDurability) {
 		super(ID, name, cost, minLevel);
@@ -20,11 +36,14 @@ public class LegendsWeapon extends LegendsItem {
 		this.regenDurability(1);
 	}
 
+	/* ===================== */
+	/* Getter/Setter Methods */
+	/* ===================== */
+	
 	public int getCurrentDurability() {
 		return currentDurability;
 	}
 
-	// Not used yet, but it would be a cool feature (ie: blacksmith tile)
 	public void regenDurability(double regenDurabilityPercentage) {
 		int toRegen = (int) Math.round(regenDurabilityPercentage * this.getMaxDurability());
 
@@ -68,7 +87,12 @@ public class LegendsWeapon extends LegendsItem {
 		}
 		this.maxDurability = maxDurability;
 	}
+	
+	/* =========== */
+	/* Aux Methods */
+	/* =========== */
 
+	@Override
 	public String toString() {
 		if (this.getDualHanded()) {
 			return "   "+this.getName() + " is a 2-handed weapon that deals " + this.getDamage()

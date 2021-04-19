@@ -1,35 +1,55 @@
+/*=====================================================*/
+/* Project Title: Legends Of Valor                     */
+/* Course Name: GRS CS611                              */
+/* Semester: Spring '21                                */
+/* Project Authors:                                    */
+/*    - Jack Giunta                                    */
+/*    - Victoria-Rose Burke                            */
+/*    - Victor Vicente                                 */
+/*=====================================================*/
+
 package Map;
 
 import Map.Tracks.Boundary;
 import Map.Tracks.Lane;
-import Map.Tracks.Track;
-import Util.Map;
-import Util.Token;
+import Util.Abstraction.Map;
+import Util.Abstraction.Track;
 
 public class LegendsMap extends Map {
-	public int totalCells;
 
-	public Token teamToken;
+	private int totalCells;
+
+	/* =================== */
+	/* Constructor Methods */
+	/* =================== */
 
 	public LegendsMap(int numTracks, int length) {
 		super(numTracks, length);
 	}
 
+	/* ============ */
+	/* Game Methods */
+	/* ============ */
+
 	public void initBoard() {
-		map = new Track[numTracks];
-		map[0] = new Lane(0, mapDimen);
-		for (int i = 1, index = 1; i < numTracks; i += 2, index++) {
-			map[i] = new Boundary(-1, mapDimen);
-			map[i + 1] = new Lane(index, mapDimen);
+		this.setMap(new Track[this.getNumTracks()]);
+		this.getMap()[0] = new Lane(0, this.getMapDimen());
+		for (int i = 1, index = 1; i < this.getNumTracks(); i += 2, index++) {
+			this.getMap()[i] = new Boundary(-1, this.getMapDimen());
+			this.getMap()[i + 1] = new Lane(index, this.getMapDimen());
 		}
 	}
 
-	public int getTotalCells() {return totalCells;}
+	/* ===================== */
+	/* Getter/Setter Methods */
+	/* ===================== */
 
-	public void setTotalCells(int i) {totalCells=i;}
+	public int getTotalCells() {
+		return totalCells;
+	}
 
-	public Token getTeamToken() {return teamToken;}
-
-	public void setTeamToken(Token i) {teamToken=i;}
+	public void setTotalCells(int i) {
+		totalCells = i;
+	}
 
 }

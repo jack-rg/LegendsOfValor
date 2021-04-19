@@ -1,3 +1,13 @@
+/*=====================================================*/
+/* Project Title: Legends Of Valor                     */
+/* Course Name: GRS CS611                              */
+/* Semester: Spring '21                                */
+/* Project Authors:                                    */
+/*    - Jack Giunta                                    */
+/*    - Victoria-Rose Burke                            */
+/*    - Victor Vicente                                 */
+/*=====================================================*/
+
 package Entities.Classes;
 
 import java.util.ArrayList;
@@ -8,6 +18,7 @@ import Entities.Classes.Instances.Exoskeleton;
 import Entities.Classes.Instances.Spirit;
 
 public class LegendsMonsterClass extends LegendsEntityClass {
+	
 	// List holding all the possible Monster Classes
 	public static final ArrayList<LegendsMonsterClass> POSSIBLE_CLASSES = new ArrayList<LegendsMonsterClass>(
 			Arrays.asList(new LegendsMonsterClass[] { new Dragon(), new Spirit(), new Exoskeleton() }));

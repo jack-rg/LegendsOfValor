@@ -1,12 +1,25 @@
+/*=====================================================*/
+/* Project Title: Legends Of Valor                     */
+/* Course Name: GRS CS611                              */
+/* Semester: Spring '21                                */
+/* Project Authors:                                    */
+/*    - Jack Giunta                                    */
+/*    - Victoria-Rose Burke                            */
+/*    - Victor Vicente                                 */
+/*=====================================================*/
+
 package Items;
 
 import java.util.ArrayList;
 import java.util.Arrays;
 
 public class LegendsArmour extends LegendsItem {
+
+	// List of all possible Armour Slots
 	public static final ArrayList<String> POSSIBLE_SLOTS = new ArrayList<String>(
 			Arrays.asList(new String[] { "Head", "Chest", "Legs", "Feet" }));
 
+	// Theoretical limits to armour
 	public static final int ABSOLUTE_MAX_DURABILITY = 5000;
 	public static final double ABSOLUTE_MAX_DEFENSE_MULTIPLIER = 0.8;
 
@@ -17,6 +30,10 @@ public class LegendsArmour extends LegendsItem {
 
 	private double defenseMultiplier;
 
+	/* =================== */
+	/* Constructor Methods */
+	/* =================== */
+
 	public LegendsArmour(int ID, String name, int cost, int minLevel, double defenseMultiplier, int maxDurability,
 			String slot) {
 		super(ID, name, cost, minLevel);
@@ -25,6 +42,10 @@ public class LegendsArmour extends LegendsItem {
 		this.regenDurability(1);
 		this.setSlot(slot);
 	}
+
+	/* ===================== */
+	/* Getter/Setter Methods */
+	/* ===================== */
 
 	public String getSlot() {
 		return this.slot;
@@ -77,10 +98,5 @@ public class LegendsArmour extends LegendsItem {
 
 	public int getMaxDurability() {
 		return maxDurability;
-	}
-
-	// TODO Add more info, Durability & Slot
-	public String toString() {
-		return String.format("%-15s %-5d %-5d %-5f  \n", getName(), getCost(), getMinLevel(), getDefenseMultiplier());
 	}
 }
