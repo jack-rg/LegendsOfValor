@@ -16,9 +16,9 @@ import Entities.LegendsEntity;
 import Entities.LegendsHero;
 import Entities.LegendsMonster;
 import Game.LegendsOfValor;
+import Map.Tracks.Track;
 import Util.Token;
 import Util.Abstraction.Cell;
-import Util.Abstraction.Track;
 
 public abstract class Place extends Cell {
 

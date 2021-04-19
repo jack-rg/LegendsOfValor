@@ -13,7 +13,6 @@ package Map.Tracks;
 import Map.Places.Nature;
 import Map.Places.Place;
 import Util.Token;
-import Util.Abstraction.Track;
 
 public class Boundary extends Track {
 	

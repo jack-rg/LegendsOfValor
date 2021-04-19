@@ -10,8 +10,8 @@
 
 package Map.Places.Plains;
 
+import Map.Tracks.Track;
 import Util.Token;
-import Util.Abstraction.Track;
 
 public class Koulou extends Plains {
 

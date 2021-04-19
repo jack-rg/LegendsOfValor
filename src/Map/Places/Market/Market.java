@@ -20,10 +20,10 @@ import Items.LegendsItem;
 import Items.LegendsSpell;
 import Items.LegendsWeapon;
 import Map.Places.Place;
+import Map.Tracks.Track;
 import Util.Printer;
 import Util.Token;
 import Util.Abstraction.Inventory;
-import Util.Abstraction.Track;
 
 public class Market extends Place {
 

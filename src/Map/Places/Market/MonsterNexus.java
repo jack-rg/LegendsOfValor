@@ -13,9 +13,9 @@ package Map.Places.Market;
 import Entities.LegendsEntity;
 import Entities.LegendsHero;
 import Game.LegendsOfValor;
+import Map.Tracks.Track;
 import Util.Printer;
 import Util.Token;
-import Util.Abstraction.Track;
 
 public class MonsterNexus extends Nexus {
 

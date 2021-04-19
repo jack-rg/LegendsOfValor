@@ -10,8 +10,8 @@
 
 package Map.Places.Market;
 
+import Map.Tracks.Track;
 import Util.Token;
-import Util.Abstraction.Track;
 
 public class PlayerNexus extends Nexus {
 

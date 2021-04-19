@@ -12,8 +12,8 @@ package Map.Places;
 
 import Entities.LegendsEntity;
 import Game.LegendsOfValor;
+import Map.Tracks.Track;
 import Util.Token;
-import Util.Abstraction.Track;
 
 public class Nature extends Place {
 

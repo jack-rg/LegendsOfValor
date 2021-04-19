@@ -18,7 +18,6 @@ import Map.Places.Plains.Cave;
 import Map.Places.Plains.Koulou;
 import Map.Places.Plains.Plains;
 import Util.Token;
-import Util.Abstraction.Track;
 
 public class Lane extends Track {
 

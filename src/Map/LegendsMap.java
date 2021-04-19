@@ -12,8 +12,8 @@ package Map;
 
 import Map.Tracks.Boundary;
 import Map.Tracks.Lane;
+import Map.Tracks.Track;
 import Util.Abstraction.Map;
-import Util.Abstraction.Track;
 
 public class LegendsMap extends Map {
 
